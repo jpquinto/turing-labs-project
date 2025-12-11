@@ -15,5 +15,11 @@ module "lambdas" {
     recipe_table_name = var.recipe_table_name
     recipe_table_arn  = var.recipe_table_arn
 
+    trial_table_name = var.trial_table_name
+    trial_table_arn  = var.trial_table_arn
+
+    submission_table_name = var.submission_table_name
+    submission_table_arn  = var.submission_table_arn
+
     backend_api_root_dir = var.backend_api_root_dir
 }

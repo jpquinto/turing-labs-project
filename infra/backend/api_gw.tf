@@ -101,6 +101,99 @@ module "api_gateway" {
             use_authorizer       = false
         },
 
+        # Trial CRUD endpoints
+        {
+            http_method          = "GET"
+            path                 = "trial"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
+            lambda_function_name = module.lambdas.trial_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "GET"
+            path                 = "trial/{id}"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
+            lambda_function_name = module.lambdas.trial_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "POST"
+            path                 = "trial"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
+            lambda_function_name = module.lambdas.trial_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "PUT"
+            path                 = "trial/{id}"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
+            lambda_function_name = module.lambdas.trial_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "DELETE"
+            path                 = "trial/{id}"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
+            lambda_function_name = module.lambdas.trial_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+
+        # Submission CRUD endpoints
+        {
+            http_method          = "GET"
+            path                 = "submission"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
+            lambda_function_name = module.lambdas.submission_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "GET"
+            path                 = "submission/{id}"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
+            lambda_function_name = module.lambdas.submission_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "POST"
+            path                 = "submission"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
+            lambda_function_name = module.lambdas.submission_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "PUT"
+            path                 = "submission/{id}"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
+            lambda_function_name = module.lambdas.submission_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
+        {
+            http_method          = "DELETE"
+            path                 = "submission/{id}"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
+            lambda_function_name = module.lambdas.submission_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
     ]
 
     authorizer_type = "CUSTOM"

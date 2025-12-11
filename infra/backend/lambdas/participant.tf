@@ -49,7 +49,11 @@ resource "aws_iam_role_policy" "participant_lambda_dynamodb" {
           "dynamodb:Query",
           "dynamodb:Scan"
         ]
-        Resource = var.participant_table_arn
+        # FIX: Append /* to the ARN to include all indexes
+        Resource = [
+          "${var.participant_table_arn}/*",
+          var.participant_table_arn # Keep the table ARN for safety
+        ]
       }
     ]
   })

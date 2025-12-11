@@ -26,6 +26,25 @@ variable "recipe_table_arn" {
 }
 
 
+variable "trial_table_name" {
+  type        = string
+  description = "The name of the DynamoDB table to store trial data"
+}
+
+variable "trial_table_arn" {
+  type        = string
+  description = "The ARN of the DynamoDB table to store trial data"
+}
+
+variable "submission_table_name" {
+  type        = string
+  description = "The name of the DynamoDB table to store submission data"
+}
+
+variable "submission_table_arn" {
+  type        = string
+  description = "The ARN of the DynamoDB table to store submission data"
+}
 
 variable "memory" {
     type        = number

@@ -25,3 +25,16 @@ module "label_recipe" {
   attributes = ["recipe"]
 }
 
+module "label_trial" {
+  source  = "cloudposse/label/null"
+  context = module.main_ctx.context
+
+  attributes = ["trial"]
+}
+
+module "label_submission" {
+  source  = "cloudposse/label/null"
+  context = module.main_ctx.context
+
+  attributes = ["submission"]
+}

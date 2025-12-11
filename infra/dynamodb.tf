@@ -51,3 +51,77 @@ module "recipe_table" {
     },
   ]
 }
+
+module "trial_table" {
+  source  = "./modules/dynamodb_table"
+  context = module.null_label.context
+
+  name = "trial"
+
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key  = "trial_id"
+  range_key = "trial_date"
+
+  attributes = [
+    {
+      name = "trial_id"
+      type = "S"
+    },
+    {
+      name = "trial_date"
+      type = "S"
+    },
+  ]
+}
+
+module "submission_table" {
+  source  = "./modules/dynamodb_table"
+  context = module.null_label.context
+
+  name = "submission"
+
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key  = "submission_id"
+  range_key = "recipe_id"
+
+  attributes = [
+    {
+      name = "submission_id"
+      type = "S"
+    },
+    {
+      name = "recipe_id"
+      type = "S"
+    },
+    {
+      name = "participant_id"
+      type = "S"
+    },
+    {
+      name = "trial_id"
+      type = "S"
+    },
+  ]
+  global_secondary_indexes = [
+    {
+      name            = "participant_id_index"
+      hash_key        = "participant_id"
+      range_key       = "recipe_id"
+      projection_type = "ALL"
+    },
+    {
+      name            = "trial_id_index"
+      hash_key        = "trial_id"
+      range_key       = "recipe_id"
+      projection_type = "ALL"
+    },
+    {
+      name            = "recipe_id_index"
+      hash_key        = "recipe_id"
+      range_key       = "submission_id"
+      projection_type = "ALL"
+    }
+  ]
+}

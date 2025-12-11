@@ -8,3 +8,12 @@ output "recipe_lambda" {
     value       = module.recipe_lambda
 }
 
+output "trial_lambda" {
+    description = "trial lambda function"
+    value       = module.trial_lambda
+}
+
+output "submission_lambda" {
+    description = "submission lambda function"
+    value       = module.submission_lambda
+}
