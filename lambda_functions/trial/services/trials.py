@@ -23,19 +23,41 @@ class TrialService:
         except Exception as e:
             raise Exception(f"Error retrieving trial by ID: {str(e)}")
     
-    def create_trial(self, status: str, trial_date: str) -> Dict[str, Any]:
+    def get_all_trials(self) -> Dict[str, Any]:
+        """
+        Get all trials from the table
+        """
+        try:
+            response = self.table.scan()
+            items = response.get('Items', [])
+
+            # Handle pagination if there are more items
+            while 'LastEvaluatedKey' in response:
+                response = self.table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+                items.extend(response.get('Items', []))
+
+            return {
+                'trials': items,
+                'count': len(items)
+            }
+        except Exception as e:
+            raise Exception(f"Error retrieving trials: {str(e)}")
+
+
+    def create_trial(self, trial_name: str, status: str, trial_date: str) -> Dict[str, Any]:
         """
         Create a new trial
         """
         try:
             trial_id = str(uuid.uuid4())
-            
+
             item = {
                 'trial_id': trial_id,
+                'trial_name': trial_name,
                 'status': status,
                 'trial_date': trial_date
             }
-            
+
             self.table.put_item(Item=item)
             return item
         except Exception as e:

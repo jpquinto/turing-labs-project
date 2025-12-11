@@ -2,7 +2,7 @@ export interface Participant {
   participant_id: string;
   trial_id: string;
   code: string;
-  tasks_assigned: number;
+  name: string;
   tasks_completed: number;
 }
 

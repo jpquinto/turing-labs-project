@@ -38,8 +38,19 @@ def handler(event, context):
 
         # GET endpoint - retrieve participant by ID or by code
         if http_method == 'GET':
+            # Check if querying by trial_id
+            if 'trial_id' in query_params:
+                trial_id = query_params['trial_id']
+                participants = service.query_participants_by_trial(trial_id)
+
+                return create_response(200, {
+                    'message': 'Participants retrieved successfully',
+                    'data': participants,
+                    'count': len(participants)
+                })
+
             # Check if querying by code (using query parameter)
-            if 'code' in query_params:
+            elif 'code' in query_params:
                 code = query_params['code']
                 participant = service.get_participant_by_code(code)
 
@@ -73,7 +84,7 @@ def handler(event, context):
             else:
                 return create_response(400, {
                     'error': 'Bad Request',
-                    'message': 'Must provide either participant_id in path or code in query parameters'
+                    'message': 'Must provide either participant_id in path, code in query parameters, or trial_id in query parameters'
                 })
 
         # POST endpoint - create new participant
@@ -87,23 +98,19 @@ def handler(event, context):
                 })
 
             # Validate required fields
-            if 'trial_id' not in body or 'code' not in body:
+            if 'trial_id' not in body or 'name' not in body:
                 return create_response(400, {
                     'error': 'Missing required fields',
-                    'message': 'trial_id and code are required'
+                    'message': 'trial_id and name are required'
                 })
 
             trial_id = body['trial_id']
-            code = body['code']
-            tasks_assigned = body.get('tasks_assigned', 0)
-            tasks_completed = body.get('tasks_completed', 0)
+            name = body['name']
 
             # Create the participant
             participant = service.create_participant(
                 trial_id=trial_id,
-                code=code,
-                tasks_assigned=tasks_assigned,
-                tasks_completed=tasks_completed
+                name=name
             )
 
             return create_response(201, {

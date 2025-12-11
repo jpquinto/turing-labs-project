@@ -6,8 +6,7 @@ module "participant_table" {
 
   billing_mode = "PAY_PER_REQUEST"
 
-  hash_key  = "participant_id"
-  range_key = "last_name"
+  hash_key = "participant_id"
 
   attributes = [
     {
@@ -15,11 +14,11 @@ module "participant_table" {
       type = "S"
     },
     {
-      name = "last_name"
+      name = "participant_id"
       type = "S"
     },
     {
-      name = "participant_id"
+      name = "trial_id"
       type = "S"
     },
   ]
@@ -28,6 +27,12 @@ module "participant_table" {
     {
       name            = "code_index"
       hash_key        = "code"
+      range_key       = "participant_id"
+      projection_type = "ALL"
+    },
+    {
+      name            = "trial_id_index"
+      hash_key        = "trial_id"
       range_key       = "participant_id"
       projection_type = "ALL"
     },
@@ -43,11 +48,25 @@ module "recipe_table" {
   billing_mode = "PAY_PER_REQUEST"
 
   hash_key  = "recipe_id"
+  range_key = "trial_id"
 
   attributes = [
     {
       name = "recipe_id"
       type = "S"
+    },
+    {
+      name = "trial_id"
+      type = "S"
+    }
+  ]
+
+  global_secondary_indexes = [
+    {
+      name            = "trial_id_index"
+      hash_key        = "trial_id"
+      range_key       = "recipe_id"
+      projection_type = "ALL"
     },
   ]
 }
@@ -60,16 +79,11 @@ module "trial_table" {
 
   billing_mode = "PAY_PER_REQUEST"
 
-  hash_key  = "trial_id"
-  range_key = "trial_date"
+  hash_key = "trial_id"
 
   attributes = [
     {
       name = "trial_id"
-      type = "S"
-    },
-    {
-      name = "trial_date"
       type = "S"
     },
   ]

@@ -43,9 +43,11 @@ export default function TrialsPage() {
               Manage taste test trials and experiments
             </p>
           </div>
-          <Button>
-            Create New Trial
-          </Button>
+          <Link href="/trials/new">
+            <Button>
+              Create New Trial
+            </Button>
+          </Link>
         </div>
 
         {loading && (
@@ -76,7 +78,7 @@ export default function TrialsPage() {
               <Link key={trial.trial_id} href={`/trials/${trial.trial_id}`}>
                 <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                   <CardHeader>
-                    <CardTitle>Trial {trial.trial_id.slice(0, 8)}</CardTitle>
+                    <CardTitle>{trial.trial_name || `Trial ${trial.trial_id.slice(0, 8)}`}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">

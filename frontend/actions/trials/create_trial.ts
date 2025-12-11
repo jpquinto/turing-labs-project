@@ -5,11 +5,13 @@ import axios from "axios";
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
 interface CreateTrialProps {
+  trial_name: string;
   status: string;
   trial_date: string;
 }
 
 export const createTrial = async ({
+  trial_name,
   status,
   trial_date,
 }: CreateTrialProps): Promise<{ message: string; data: any }> => {
@@ -17,6 +19,7 @@ export const createTrial = async ({
     const response = await axios.post(
       `${BACKEND_API_URL}/trial`,
       {
+        trial_name,
         status,
         trial_date,
       },

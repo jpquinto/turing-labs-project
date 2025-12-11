@@ -49,7 +49,10 @@ resource "aws_iam_role_policy" "recipe_lambda_dynamodb" {
           "dynamodb:Query",
           "dynamodb:Scan"
         ]
-        Resource = var.recipe_table_arn
+        Resource = [
+          var.recipe_table_arn,
+          "${var.recipe_table_arn}/*",
+        ]
       }
     ]
   })

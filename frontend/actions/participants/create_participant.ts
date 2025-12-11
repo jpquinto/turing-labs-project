@@ -6,25 +6,19 @@ const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
 interface CreateParticipantProps {
   trial_id: string;
-  code: string;
-  tasks_assigned?: number;
-  tasks_completed?: number;
+  name: string;
 }
 
 export const createParticipant = async ({
   trial_id,
-  code,
-  tasks_assigned = 0,
-  tasks_completed = 0,
+  name,
 }: CreateParticipantProps): Promise<{ message: string; data: any }> => {
   try {
     const response = await axios.post(
       `${BACKEND_API_URL}/participant`,
       {
         trial_id,
-        code,
-        tasks_assigned,
-        tasks_completed,
+        name,
       },
       {
         headers: {

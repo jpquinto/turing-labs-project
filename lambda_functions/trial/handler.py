@@ -35,27 +35,32 @@ def handler(event, context):
 
         service = TrialService()
 
-        # GET endpoint - retrieve trial by ID
+        # GET endpoint - retrieve trial(s)
         if http_method == 'GET':
-            if 'trial_id' not in path_params:
-                return create_response(400, {
-                    'error': 'Bad Request',
-                    'message': 'Must provide trial_id in path'
+            # If id is provided in path params, get single trial
+            if 'id' in path_params and path_params['id']:
+                trial_id = path_params['id']
+                trial = service.get_trial_by_id(trial_id)
+
+                if not trial:
+                    return create_response(404, {
+                        'error': 'Trial not found',
+                        'message': f'No trial found with ID: {trial_id}'
+                    })
+
+                return create_response(200, {
+                    'message': 'Trial retrieved successfully',
+                    'data': trial
                 })
 
-            trial_id = path_params['trial_id']
-            trial = service.get_trial_by_id(trial_id)
-
-            if not trial:
-                return create_response(404, {
-                    'error': 'Trial not found',
-                    'message': f'No trial found with ID: {trial_id}'
+            # Otherwise, get all trials
+            else:
+                result = service.get_all_trials()
+                return create_response(200, {
+                    'message': 'Trials retrieved successfully',
+                    'data': result['trials'],
+                    'count': result['count']
                 })
-
-            return create_response(200, {
-                'message': 'Trial retrieved successfully',
-                'data': trial
-            })
 
         # POST endpoint - create new trial
         elif http_method == 'POST':
@@ -68,17 +73,19 @@ def handler(event, context):
                 })
 
             # Validate required fields
-            if 'status' not in body or 'trial_date' not in body:
+            if 'trial_name' not in body or 'status' not in body or 'trial_date' not in body:
                 return create_response(400, {
                     'error': 'Missing required fields',
-                    'message': 'status and trial_date are required'
+                    'message': 'trial_name, status and trial_date are required'
                 })
 
+            trial_name = body['trial_name']
             status = body['status']
             trial_date = body['trial_date']
 
             # Create the trial
             trial = service.create_trial(
+                trial_name=trial_name,
                 status=status,
                 trial_date=trial_date
             )
