@@ -1,0 +1,3 @@
+# Terraform
+
+Base Terraform configuration
