@@ -27,7 +27,7 @@ module "participant_lambda" {
   enable_vpc_access           = false
 
   environment_variables = {
-    PARTICIPANT_TABLE_NAME : var.participant_table_name
+    PARTICIPANTS_TABLE_NAME : var.participant_table_name
   }
 }
 

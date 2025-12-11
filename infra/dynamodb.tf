@@ -11,7 +11,7 @@ module "participant_table" {
 
   attributes = [
     {
-      name = "first_name"
+      name = "code"
       type = "S"
     },
     {
@@ -26,8 +26,8 @@ module "participant_table" {
 
   global_secondary_indexes = [
     {
-      name            = "first_name_index"
-      hash_key        = "first_name"
+      name            = "code_index"
+      hash_key        = "code"
       range_key       = "participant_id"
       projection_type = "ALL"
     },

@@ -27,7 +27,7 @@ module "recipe_lambda" {
   enable_vpc_access           = false
 
   environment_variables = {
-    RECIPE_TABLE_NAME : var.recipe_table_name
+    RECIPES_TABLE_NAME : var.recipe_table_name
   }
 }
 
