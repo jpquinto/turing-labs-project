@@ -1,3 +1,6 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 resource "aws_api_gateway_authorizer" "lambda_authorizer" {
   name                             = var.authorizer_name
   rest_api_id                      = var.rest_api_id
@@ -42,4 +45,13 @@ resource "aws_iam_role_policy" "invocation_policy" {
   name   = "${module.label_authorizer_policy.id}-${var.authorizer_name}"
   role   = aws_iam_role.invocation_role.id
   policy = data.aws_iam_policy_document.invocation_policy.json
+}
+
+# Add Lambda permission for API Gateway to invoke the authorizer
+resource "aws_lambda_permission" "authorizer_permission" {
+  statement_id  = "AllowAPIGatewayInvokeAuthorizer-${var.rest_api_id}"
+  action        = "lambda:InvokeFunction"
+  function_name = var.authorizer_arn
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${var.rest_api_id}/authorizers/${aws_api_gateway_authorizer.lambda_authorizer.id}"
 }
