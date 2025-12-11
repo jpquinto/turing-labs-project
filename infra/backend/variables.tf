@@ -46,6 +46,21 @@ variable "submission_table_arn" {
   description = "The ARN of the DynamoDB table to store submission data"
 }
 
+variable "user_table_name" {
+  type        = string
+  description = "The name of the DynamoDB table to store user data"
+}
+
+variable "user_table_arn" {
+  type        = string
+  description = "The ARN of the DynamoDB table to store user data"
+}
+
+variable "auth0_webhook_secret" {
+  type        = string
+  description = "The secret for the Auth0 webhook"
+}
+
 variable "memory" {
     type        = number
     description = "Default memory for Lambda functions"

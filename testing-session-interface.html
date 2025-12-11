@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Session - FormulateAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .recipe-card {
+            transition: all 0.2s ease;
+        }
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .slider-container {
+            position: relative;
+        }
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #EF4444 0%, #F59E0B 50%, #10B981 100%);
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563EB;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563EB;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .value-display {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            height: 32px;
+            background: #2563EB;
+            color: white;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+        .progress-ring {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .notes-input {
+            transition: all 0.2s ease;
+        }
+        .notes-input.active {
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Main Container -->
+    <div class="min-h-screen">
+        <!-- Header Bar -->
+        <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">Testing Session</h1>
+                        <p class="text-sm text-gray-600 mt-0.5">Sugar Reduction Project - Batch 3</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <!-- Progress Indicator -->
+                        <div class="flex items-center gap-3">
+                            <svg class="w-12 h-12" viewBox="0 0 36 36">
+                                <path
+                                    d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none"
+                                    stroke="#E5E7EB"
+                                    stroke-width="3"
+                                />
+                                <path
+                                    class="progress-ring"
+                                    d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none"
+                                    stroke="#2563EB"
+                                    stroke-width="3"
+                                    stroke-dasharray="67, 100"
+                                />
+                                <text x="18" y="20.5" class="text-xs font-semibold" text-anchor="middle" fill="#1F2937">67%</text>
+                            </svg>
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">8 of 12 complete</div>
+                                <div class="text-gray-500">4 participants</div>
+                            </div>
+                        </div>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            View Progress
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <!-- Current User Badge (Roundtable Mode) -->
+            <div class="mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-green-900">Sarah Chen</span>
+                    </div>
+                    <button class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        Switch user →
+                    </button>
+                </div>
+                <div class="text-sm text-gray-600">
+                    Recipe 2 of 3 • Outcome 3 of 4
+                </div>
+            </div>
+
+            <!-- Recipe Selection Tabs -->
+            <div class="flex gap-3 mb-6 overflow-x-auto pb-2">
+                <button class="px-5 py-2.5 bg-white text-gray-700 border-2 border-gray-200 rounded-lg font-medium hover:border-blue-300 transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    Recipe A-01
+                </button>
+                <button class="px-5 py-2.5 bg-blue-600 text-white border-2 border-blue-600 rounded-lg font-medium shadow-sm">
+                    Recipe B-02
+                </button>
+                <button class="px-5 py-2.5 bg-white text-gray-700 border-2 border-gray-200 rounded-lg font-medium hover:border-blue-300 transition-all">
+                    Recipe C-03
+                </button>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Recipe Details Card (Left) -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recipe B-02</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Formulation</label>
+                                <div class="mt-2 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Sugar</span>
+                                        <span class="font-medium text-gray-900">8.5g</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Stevia Extract</span>
+                                        <span class="font-medium text-gray-900">0.3g</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Allulose</span>
+                                        <span class="font-medium text-gray-900">4.2g</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Citric Acid</span>
+                                        <span class="font-medium text-gray-900">0.1g</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-100">
+                                <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Target Metrics</label>
+                                <div class="mt-2 space-y-2">
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-700">Sugar Reduction</span>
+                                        <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">45%</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-700">Cost per Unit</span>
+                                        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">$0.18</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-100">
+                                <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Prediction</label>
+                                <div class="mt-2 text-sm text-gray-600">
+                                    AI predicts this formula will score <span class="font-semibold text-gray-900">8.2/10</span> on overall taste
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Measurement Entry Form (Right) -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-semibold text-gray-900 mb-2">Enter Your Measurements</h2>
+                            <p class="text-gray-600">Rate each outcome on a scale of 1-10</p>
+                        </div>
+
+                        <!-- Outcome Measurements -->
+                        <div class="space-y-8">
+                            <!-- Outcome 1 - Completed -->
+                            <div class="p-6 bg-gray-50 rounded-xl border border-gray-200">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Overall Taste</h3>
+                                        <p class="text-sm text-gray-500 mt-1">Rate the general taste profile and acceptability</p>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-green-600">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Saved</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div class="flex-1 slider-container">
+                                        <input type="range" min="1" max="10" value="7.5" step="0.5" disabled class="opacity-50 cursor-not-allowed">
+                                        <div class="slider-labels">
+                                            <span>1 - Poor</span>
+                                            <span>5 - Average</span>
+                                            <span>10 - Excellent</span>
+                                        </div>
+                                    </div>
+                                    <div class="value-display opacity-50">7.5</div>
+                                </div>
+
+                                <!-- Saved Text Note -->
+                                <div class="mt-3 pt-3 border-t border-gray-200">
+                                    <div class="flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                                        </svg>
+                                        <p class="text-sm text-gray-600 italic">Good balance of flavors. Slightly less sweet than control but acceptable. No off-flavors detected.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Outcome 2 - Completed -->
+                            <div class="p-6 bg-gray-50 rounded-xl border border-gray-200">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Sweetness Level</h3>
+                                        <p class="text-sm text-gray-500 mt-1">How sweet does the product taste?</p>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-green-600">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Saved</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div class="flex-1 slider-container">
+                                        <input type="range" min="1" max="10" value="8" step="0.5" disabled class="opacity-50 cursor-not-allowed">
+                                        <div class="slider-labels">
+                                            <span>1 - Not Sweet</span>
+                                            <span>5 - Moderate</span>
+                                            <span>10 - Very Sweet</span>
+                                        </div>
+                                    </div>
+                                    <div class="value-display opacity-50">8.0</div>
+                                </div>
+
+                                <!-- Saved Voice Note -->
+                                <div class="mt-3 pt-3 border-t border-gray-200">
+                                    <div class="flex items-center gap-3 bg-white rounded-lg p-3 border border-gray-200">
+                                        <button onclick="playSavedAudio()" class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 flex-shrink-0">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>
+                                            </svg>
+                                        </button>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2">
+                                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                                                </svg>
+                                                <span class="text-sm text-gray-600">Voice note • 0:18</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Outcome 3 - Active -->
+                            <div class="p-6 bg-blue-50 rounded-xl border-2 border-blue-500">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Texture Quality</h3>
+                                        <p class="text-sm text-gray-500 mt-1">Mouthfeel, consistency, and overall texture</p>
+                                    </div>
+                                    <div class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-medium">
+                                        In Progress
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="flex-1 slider-container">
+                                        <input type="range" min="1" max="10" value="6.5" step="0.5" id="texture-slider">
+                                        <div class="slider-labels">
+                                            <span>1 - Poor</span>
+                                            <span>5 - Average</span>
+                                            <span>10 - Excellent</span>
+                                        </div>
+                                    </div>
+                                    <div class="value-display" id="texture-value">6.5</div>
+                                </div>
+
+                                <!-- Notes Section -->
+                                <div class="mt-4 pt-4 border-t border-blue-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <label class="text-sm font-medium text-gray-700">Add Notes (Optional)</label>
+                                        <div class="flex gap-2">
+                                            <button onclick="switchToText('texture')" id="texture-text-btn" class="px-3 py-1 bg-white border border-gray-300 rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                                Text
+                                            </button>
+                                            <button onclick="switchToVoice('texture')" id="texture-voice-btn" class="px-3 py-1 bg-white border border-gray-300 rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                                                </svg>
+                                                Voice
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Text Input -->
+                                    <div id="texture-text-input" class="notes-input active">
+                                        <textarea 
+                                            rows="2" 
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-sm"
+                                            placeholder="e.g., Slightly grainy texture, could be smoother. Good mouthfeel overall."
+                                        ></textarea>
+                                    </div>
+
+                                    <!-- Voice Input -->
+                                    <div id="texture-voice-input" class="notes-input" style="display: none;">
+                                        <div class="bg-white rounded-lg border border-gray-300 p-4">
+                                            <!-- Recording Controls -->
+                                            <div id="texture-recording-controls" class="flex items-center justify-center gap-4">
+                                                <button onclick="startRecording('texture')" class="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 flex items-center gap-2">
+                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Start Recording
+                                                </button>
+                                            </div>
+
+                                            <!-- Recording in Progress -->
+                                            <div id="texture-recording-active" class="hidden">
+                                                <div class="flex items-center justify-between mb-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="flex h-3 w-3">
+                                                                <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                                                                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                                            </span>
+                                                            <span class="text-sm font-medium text-gray-900">Recording</span>
+                                                        </div>
+                                                        <span id="texture-recording-timer" class="text-sm font-mono text-gray-600">0:00</span>
+                                                    </div>
+                                                    <button onclick="stopRecording('texture')" class="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600">
+                                                        Stop
+                                                    </button>
+                                                </div>
+                                                <div class="h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                    <div class="flex gap-1 items-end h-12">
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 20%; animation-delay: 0ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 40%; animation-delay: 100ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 60%; animation-delay: 200ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 80%; animation-delay: 300ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 100%; animation-delay: 400ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 80%; animation-delay: 500ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 60%; animation-delay: 600ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 40%; animation-delay: 700ms;"></div>
+                                                        <div class="w-1 bg-red-500 animate-pulse" style="height: 20%; animation-delay: 800ms;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Recorded Audio -->
+                                            <div id="texture-recorded-audio" class="hidden">
+                                                <div class="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                                                    <button onclick="playAudio('texture')" class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700">
+                                                        <svg id="texture-play-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="flex-1">
+                                                        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                            <div id="texture-audio-progress" class="h-full bg-blue-600 rounded-full" style="width: 0%"></div>
+                                                        </div>
+                                                        <div class="flex justify-between mt-1">
+                                                            <span class="text-xs text-gray-600">Voice note</span>
+                                                            <span id="texture-audio-duration" class="text-xs text-gray-600">0:23</span>
+                                                        </div>
+                                                    </div>
+                                                    <button onclick="deleteRecording('texture')" class="text-gray-400 hover:text-red-600">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Outcome 4 - Pending -->
+                            <div class="p-6 bg-white rounded-xl border-2 border-gray-200">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-400">Aftertaste</h3>
+                                        <p class="text-sm text-gray-400 mt-1">Quality and duration of aftertaste</p>
+                                    </div>
+                                    <div class="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-medium">
+                                        Not Started
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="flex-1 slider-container">
+                                        <input type="range" min="1" max="10" value="5" step="0.5" disabled class="opacity-30 cursor-not-allowed">
+                                        <div class="slider-labels opacity-30">
+                                            <span>1 - Poor</span>
+                                            <span>5 - Average</span>
+                                            <span>10 - Excellent</span>
+                                        </div>
+                                    </div>
+                                    <div class="value-display opacity-30">-</div>
+                                </div>
+
+                                <!-- Notes Section (Disabled) -->
+                                <div class="mt-4 pt-4 border-t border-gray-200 opacity-40">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <label class="text-sm font-medium text-gray-400">Add Notes (Optional)</label>
+                                        <div class="flex gap-2">
+                                            <button disabled class="px-3 py-1 bg-gray-100 border border-gray-200 rounded-md text-xs font-medium text-gray-400 cursor-not-allowed">
+                                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                                Text
+                                            </button>
+                                            <button disabled class="px-3 py-1 bg-gray-100 border border-gray-200 rounded-md text-xs font-medium text-gray-400 cursor-not-allowed">
+                                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                                                </svg>
+                                                Voice
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <textarea 
+                                        rows="2" 
+                                        disabled
+                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg resize-none text-sm bg-gray-50 text-gray-400 cursor-not-allowed"
+                                        placeholder="Complete the rating above to add notes"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-8 flex gap-3">
+                            <button class="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                                Save Draft
+                            </button>
+                            <button class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                                <span>Save & Continue to Recipe C-03</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Participants' Status (Roundtable Mode) -->
+            <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-sm font-medium text-gray-900 mb-4">Participant Progress for Recipe B-02</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Sarah Chen</div>
+                            <div class="text-xs text-green-700">3 of 4 complete</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Mike Rodriguez</div>
+                            <div class="text-xs text-green-700">4 of 4 complete</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <svg class="w-5 h-5 text-yellow-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Jenny Kim</div>
+                            <div class="text-xs text-yellow-700">Not started</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <svg class="w-5 h-5 text-yellow-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Alex Thompson</div>
+                            <div class="text-xs text-yellow-700">Not started</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive slider
+        const slider = document.getElementById('texture-slider');
+        const valueDisplay = document.getElementById('texture-value');
+        
+        slider.addEventListener('input', function() {
+            valueDisplay.textContent = this.value;
+        });
+
+        // Voice recording state
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingTimer = null;
+        let recordingStartTime = 0;
+
+        // Switch between text and voice input
+        function switchToText(outcomeId) {
+            document.getElementById(outcomeId + '-text-input').style.display = 'block';
+            document.getElementById(outcomeId + '-voice-input').style.display = 'none';
+            document.getElementById(outcomeId + '-text-btn').classList.add('bg-blue-100', 'text-blue-700', 'border-blue-300');
+            document.getElementById(outcomeId + '-text-btn').classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+            document.getElementById(outcomeId + '-voice-btn').classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-300');
+            document.getElementById(outcomeId + '-voice-btn').classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+        }
+
+        function switchToVoice(outcomeId) {
+            document.getElementById(outcomeId + '-text-input').style.display = 'none';
+            document.getElementById(outcomeId + '-voice-input').style.display = 'block';
+            document.getElementById(outcomeId + '-voice-btn').classList.add('bg-blue-100', 'text-blue-700', 'border-blue-300');
+            document.getElementById(outcomeId + '-voice-btn').classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+            document.getElementById(outcomeId + '-text-btn').classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-300');
+            document.getElementById(outcomeId + '-text-btn').classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+        }
+
+        // Voice recording functions
+        async function startRecording(outcomeId) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener('stop', () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    // Here you would upload the audio blob to your server
+                    console.log('Recording stopped, audio blob created:', audioBlob);
+                    
+                    // Show the recorded audio UI
+                    document.getElementById(outcomeId + '-recording-controls').classList.remove('hidden');
+                    document.getElementById(outcomeId + '-recording-active').classList.add('hidden');
+                    document.getElementById(outcomeId + '-recorded-audio').classList.remove('hidden');
+                });
+
+                mediaRecorder.start();
+                
+                // Update UI to show recording in progress
+                document.getElementById(outcomeId + '-recording-controls').classList.add('hidden');
+                document.getElementById(outcomeId + '-recording-active').classList.remove('hidden');
+                
+                // Start timer
+                recordingStartTime = Date.now();
+                updateRecordingTimer(outcomeId);
+                
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                alert('Unable to access microphone. Please check your permissions.');
+            }
+        }
+
+        function updateRecordingTimer(outcomeId) {
+            recordingTimer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById(outcomeId + '-recording-timer').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopRecording(outcomeId) {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                clearInterval(recordingTimer);
+                
+                // Calculate final duration
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById(outcomeId + '-audio-duration').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function playAudio(outcomeId) {
+            // Toggle play/pause icon
+            const playIcon = document.getElementById(outcomeId + '-play-icon');
+            const currentPath = playIcon.querySelector('path').getAttribute('d');
+            
+            if (currentPath.includes('M6.3')) { // Play icon
+                // Change to pause icon
+                playIcon.innerHTML = '<path d="M5.5 3.5A1.5 1.5 0 017 5v10a1.5 1.5 0 01-3 0V5a1.5 1.5 0 011.5-1.5zm8 0A1.5 1.5 0 0115 5v10a1.5 1.5 0 01-3 0V5a1.5 1.5 0 011.5-1.5z"></path>';
+                
+                // Simulate audio playback progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 2;
+                    document.getElementById(outcomeId + '-audio-progress').style.width = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        // Reset to play icon
+                        playIcon.innerHTML = '<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>';
+                        document.getElementById(outcomeId + '-audio-progress').style.width = '0%';
+                    }
+                }, 100);
+            } else { // Pause icon
+                // Change back to play icon
+                playIcon.innerHTML = '<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>';
+            }
+        }
+
+        function deleteRecording(outcomeId) {
+            if (confirm('Delete this voice recording?')) {
+                // Reset to initial recording state
+                document.getElementById(outcomeId + '-recording-controls').classList.remove('hidden');
+                document.getElementById(outcomeId + '-recording-active').classList.add('hidden');
+                document.getElementById(outcomeId + '-recorded-audio').classList.add('hidden');
+                document.getElementById(outcomeId + '-audio-progress').style.width = '0%';
+            }
+        }
+
+        function playSavedAudio() {
+            // Simulate playing a saved voice note
+            alert('Playing saved voice note...');
+        }
+
+        // Initialize with text input active
+        window.addEventListener('DOMContentLoaded', () => {
+            switchToText('texture');
+        });
+    </script>
+</body>
+</html>

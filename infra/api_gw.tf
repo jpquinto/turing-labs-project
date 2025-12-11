@@ -15,5 +15,10 @@ module "backend" {
     submission_table_name = module.submission_table.name
     submission_table_arn  = module.submission_table.arn
 
+    user_table_name = module.user_table.name
+    user_table_arn  = module.user_table.arn
+
+    auth0_webhook_secret = local.third_party_secrets.auth0_webhook_secret
+
     backend_api_root_dir = "${path.root}/../lambda_functions"
 }

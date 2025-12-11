@@ -6,6 +6,16 @@ module "api_gateway" {
     stage_name = "dev"
 
     http_routes = [
+        {
+            http_method          = "POST"
+            path                 = "user"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.create_user_lambda.invoke_arn
+            lambda_function_name = module.create_user_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_webhooks_auth0_authorizer.authorizer_id
+        },
 
         # Participant CRUD endpoints
         {
