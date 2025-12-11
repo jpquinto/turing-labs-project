@@ -132,3 +132,43 @@ variable "routing_rule" {
   description = "Routing rules for the website configuration."
   default     = []
 }
+
+###########
+# CORS Configuration
+###########
+
+variable "enable_cors" {
+  type        = bool
+  description = "Whether to enable CORS configuration on the bucket."
+  default     = false
+}
+
+variable "cors_allowed_origins" {
+  type        = list(string)
+  description = "List of allowed origins for CORS."
+  default     = ["*"]
+}
+
+variable "cors_allowed_methods" {
+  type        = list(string)
+  description = "List of allowed HTTP methods for CORS."
+  default     = ["GET", "PUT", "POST", "DELETE", "HEAD"]
+}
+
+variable "cors_allowed_headers" {
+  type        = list(string)
+  description = "List of allowed headers for CORS."
+  default     = ["*"]
+}
+
+variable "cors_expose_headers" {
+  type        = list(string)
+  description = "List of headers to expose for CORS."
+  default     = ["ETag"]
+}
+
+variable "cors_max_age_seconds" {
+  type        = number
+  description = "Max age in seconds for CORS preflight requests."
+  default     = 3000
+}

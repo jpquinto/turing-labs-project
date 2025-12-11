@@ -11,6 +11,7 @@ import { Trial, Recipe, Participant } from '@/types';
 import { getTrial } from '@/actions/trials';
 import { getRecipesByTrial } from '@/actions/recipes';
 import { getParticipantsByTrial } from '@/actions/participants';
+import VoiceRecorder from '@/components/VoiceRecorder';
 
 export default function TestingSessionPage() {
   const params = useParams();
@@ -24,6 +25,7 @@ export default function TestingSessionPage() {
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [scores, setScores] = useState<{ [key: string]: number }>({});
   const [notes, setNotes] = useState<{ [key: string]: string }>({});
+  const [voiceMemos, setVoiceMemos] = useState<{ [key: string]: string }>({});
   const [noteType, setNoteType] = useState<{ [key: string]: 'text' | 'voice' }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +79,11 @@ export default function TestingSessionPage() {
   const handleNoteTypeChange = (outcome: string, type: 'text' | 'voice') => {
     const key = `${selectedParticipant?.participant_id}-${currentRecipeIndex}-${outcome}`;
     setNoteType({ ...noteType, [key]: type });
+  };
+
+  const handleVoiceMemoUpload = (outcome: string, s3Key: string) => {
+    const key = `${selectedParticipant?.participant_id}-${currentRecipeIndex}-${outcome}`;
+    setVoiceMemos({ ...voiceMemos, [key]: s3Key });
   };
 
   const handleNextRecipe = () => {
@@ -147,7 +154,7 @@ export default function TestingSessionPage() {
   // Check if there are any changes for the current participant and recipe
   const hasChanges = outcomeTypes.some(outcome => {
     const key = `${selectedParticipant.participant_id}-${currentRecipeIndex}-${outcome}`;
-    return scores[key] !== undefined || notes[key];
+    return scores[key] !== undefined || notes[key] || voiceMemos[key];
   });
 
   const allFieldsComplete = completedOutcomes === outcomeTypes.length;
@@ -311,6 +318,7 @@ export default function TestingSessionPage() {
                   const key = `${selectedParticipant.participant_id}-${currentRecipeIndex}-${outcome}`;
                   const score = scores[key] || 5;
                   const note = notes[key] || '';
+                  const voiceMemo = voiceMemos[key] || '';
                   const currentNoteType = noteType[key] || 'text';
                   const isCompleted = scores[key] !== undefined;
 
@@ -418,27 +426,40 @@ export default function TestingSessionPage() {
                             placeholder={isDisabled ? "Complete previous measurement first" : "e.g., Good balance of flavors. Slightly less sweet than control..."}
                           />
                         ) : (
-                          <div className={`w-full p-4 border rounded-lg text-sm text-center ${
+                          <div className={`w-full p-4 border rounded-lg ${
                             isDisabled
-                              ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/50 text-zinc-400 dark:text-zinc-600 cursor-not-allowed'
-                              : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-600 dark:text-zinc-400'
+                              ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/50 cursor-not-allowed'
+                              : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950'
                           }`}>
                             {isDisabled ? (
-                              <p>Complete previous measurement first</p>
-                            ) : (
-                              <>
-                                <Mic className="h-8 w-8 mx-auto mb-2 text-zinc-400" />
-                                <p className="mb-2">Voice memo recording</p>
+                              <p className="text-center text-sm text-zinc-400 dark:text-zinc-600">
+                                Complete previous measurement first
+                              </p>
+                            ) : voiceMemo ? (
+                              <div className="text-center space-y-2">
+                                <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400">
+                                  <Mic className="h-5 w-5" />
+                                  <span className="text-sm font-medium">Voice memo uploaded</span>
+                                </div>
                                 <Button
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  disabled
+                                  onClick={() => {
+                                    const updatedMemos = { ...voiceMemos };
+                                    delete updatedMemos[key];
+                                    setVoiceMemos(updatedMemos);
+                                  }}
                                   className="text-xs"
                                 >
-                                  Coming soon
+                                  Record New
                                 </Button>
-                              </>
+                              </div>
+                            ) : (
+                              <VoiceRecorder
+                                onUploadComplete={(s3Key) => handleVoiceMemoUpload(outcome, s3Key)}
+                                disabled={isDisabled}
+                              />
                             )}
                           </div>
                         )}

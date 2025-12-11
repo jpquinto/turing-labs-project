@@ -204,6 +204,17 @@ module "api_gateway" {
             enable_cors_all      = true
             use_authorizer       = false
         },
+
+        # Voice Memo endpoints
+        {
+            http_method          = "POST"
+            path                 = "voice-memo"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.voice_memo_lambda.invoke_arn
+            lambda_function_name = module.lambdas.voice_memo_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = false
+        },
     ]
 
     authorizer_type = "CUSTOM"

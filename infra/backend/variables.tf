@@ -61,6 +61,16 @@ variable "auth0_webhook_secret" {
   description = "The secret for the Auth0 webhook"
 }
 
+variable "voice_memo_bucket" {
+  type        = string
+  description = "The name of the S3 bucket to store voice memos"
+}
+
+variable "voice_memo_bucket_arn" {
+  type        = string
+  description = "The ARN of the S3 bucket to store voice memos"
+}
+
 variable "memory" {
     type        = number
     description = "Default memory for Lambda functions"

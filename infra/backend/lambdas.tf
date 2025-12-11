@@ -21,5 +21,8 @@ module "lambdas" {
     submission_table_name = var.submission_table_name
     submission_table_arn  = var.submission_table_arn
 
+    voice_memo_bucket = var.voice_memo_bucket
+    voice_memo_bucket_arn = var.voice_memo_bucket_arn
+
     backend_api_root_dir = var.backend_api_root_dir
 }

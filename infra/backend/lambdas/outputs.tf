@@ -17,3 +17,8 @@ output "submission_lambda" {
     description = "submission lambda function"
     value       = module.submission_lambda
 }
+
+output "voice_memo_lambda" {
+    description = "voice memo lambda function"
+    value       = module.voice_memo_lambda
+}

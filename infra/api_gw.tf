@@ -20,5 +20,8 @@ module "backend" {
 
     auth0_webhook_secret = local.third_party_secrets.auth0_webhook_secret
 
+    voice_memo_bucket = module.voice_memo_bucket.bucket_name
+    voice_memo_bucket_arn = module.voice_memo_bucket.bucket_arn
+
     backend_api_root_dir = "${path.root}/../lambda_functions"
 }

@@ -38,3 +38,10 @@ module "label_submission" {
 
   attributes = ["submission"]
 }
+
+module "label_voice_memo" {
+  source  = "cloudposse/label/null"
+  context = module.main_ctx.context
+
+  attributes = ["voice-memo"]
+}
