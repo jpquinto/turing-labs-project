@@ -45,3 +45,10 @@ module "label_voice_memo" {
 
   attributes = ["voice-memo"]
 }
+
+module "label_transcription" {
+  source  = "cloudposse/label/null"
+  context = module.main_ctx.context
+
+  attributes = ["transcription"]
+}

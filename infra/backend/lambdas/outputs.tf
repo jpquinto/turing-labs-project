@@ -22,3 +22,8 @@ output "voice_memo_lambda" {
     description = "voice memo lambda function"
     value       = module.voice_memo_lambda
 }
+
+output "transcription_lambda" {
+    description = "transcription lambda function"
+    value       = module.transcription_lambda
+}

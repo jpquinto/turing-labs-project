@@ -7,6 +7,7 @@ export interface Submission {
   status: 'draft' | 'saved';
   notes?: string;
   voice_memo_key?: string;
+  transcription?: string;
   last_updated: string;
 }
 
