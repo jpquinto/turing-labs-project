@@ -38,21 +38,10 @@ def handler(event, context):
 
         # GET endpoint - retrieve recipe by ID or query by trial_id
         if http_method == 'GET':
-            # Query by trial_id
-            if 'trial_id' in query_params:
+            # Get by recipe_id (with trial_id in query params) - CHECK THIS FIRST
+            if 'id' in path_params and 'trial_id' in query_params:
+                recipe_id = path_params['id']
                 trial_id = query_params['trial_id']
-                recipes = service.query_recipes_by_trial(trial_id)
-
-                return create_response(200, {
-                    'message': 'Recipes retrieved successfully',
-                    'data': recipes,
-                    'count': len(recipes)
-                })
-
-            # Get by recipe_id and trial_id
-            elif 'recipe_id' in path_params and 'trial_id' in path_params:
-                recipe_id = path_params['recipe_id']
-                trial_id = path_params['trial_id']
                 recipe = service.get_recipe_by_id(recipe_id, trial_id)
 
                 if not recipe:
@@ -66,10 +55,21 @@ def handler(event, context):
                     'data': recipe
                 })
 
+            # Query by trial_id (without path param)
+            elif 'trial_id' in query_params and 'id' not in path_params:
+                trial_id = query_params['trial_id']
+                recipes = service.query_recipes_by_trial(trial_id)
+
+                return create_response(200, {
+                    'message': 'Recipes retrieved successfully',
+                    'data': recipes,
+                    'count': len(recipes)
+                })
+
             else:
                 return create_response(400, {
                     'error': 'Bad Request',
-                    'message': 'Must provide either trial_id in query parameters or recipe_id and trial_id in path'
+                    'message': 'Must provide either trial_id in query parameters for listing, or path parameter (id) with trial_id query parameter for single recipe'
                 })
 
         # POST endpoint - create new recipe

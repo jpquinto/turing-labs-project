@@ -2,16 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Recipe, Submission } from '@/types';
 import { getRecipe } from '@/actions/recipes';
+import { getSubmissionsByRecipe } from '@/actions/submissions';
 
 export default function RecipeDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const trialId = params.trial_id as string;
   const recipeId = params.recipe_id as string;
 
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -20,22 +23,21 @@ export default function RecipeDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadRecipeData();
-  }, [recipeId]);
+    if (trialId && recipeId) {
+      loadRecipeData();
+    }
+  }, [trialId, recipeId]);
 
   const loadRecipeData = async () => {
     try {
       setLoading(true);
-      // Note: getRecipe requires both recipe_id and trial_id (composite key)
-      // For now, we'll need to get the trial_id from the URL params or from a list
-      // TODO: Update URL structure to /recipes/[recipe_id]/[trial_id] or use a different lookup method
-      // const recipeResponse = await getRecipe({ recipe_id: recipeId, trial_id: trialId });
-      // setRecipe(recipeResponse.data);
-      
-      // Temporary: Set error until we have the trial_id
-      setError('Recipe detail page requires trial_id. Navigate from a trial to view recipe details.');
-      setRecipe(null);
-      setSubmissions([]);
+      const [recipeResponse, submissionsResponse] = await Promise.all([
+        getRecipe({ recipe_id: recipeId, trial_id: trialId }),
+        getSubmissionsByRecipe({ recipe_id: recipeId })
+      ]);
+      setRecipe(recipeResponse.data);
+      setSubmissions(submissionsResponse.data);
+      setError(null);
     } catch (err) {
       setError('Failed to load recipe data. Please try again.');
       console.error(err);
@@ -61,7 +63,7 @@ export default function RecipeDetailPage() {
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <p className="text-red-800 dark:text-red-200">{error || 'Recipe not found'}</p>
           </div>
-          <Button onClick={() => router.push('/recipes')} className="mt-4" variant="outline">
+          <Button onClick={() => router.push(`/trials/${trialId}/recipes`)} className="mt-4" variant="outline">
             ← Back to Recipes
           </Button>
         </main>
@@ -78,7 +80,7 @@ export default function RecipeDetailPage() {
       <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <Button onClick={() => router.push('/recipes')} variant="ghost" className="mb-4">
+          <Button onClick={() => router.push(`/trials/${trialId}/recipes`)} variant="ghost" className="mb-4">
             ← Back to Recipes
           </Button>
           <div className="flex justify-between items-start">
@@ -210,6 +212,9 @@ export default function RecipeDetailPage() {
                         <Badge variant={submission.status === 'saved' ? 'default' : 'secondary'}>
                           {submission.status}
                         </Badge>
+                        <Link href={`/trials/${trialId}/submissions/${submission.submission_id}`}>
+                          <Button variant="ghost" size="sm">View</Button>
+                        </Link>
                       </div>
                     </div>
                   ))}

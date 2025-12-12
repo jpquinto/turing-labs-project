@@ -14,10 +14,11 @@ export const getSubmission = async ({
   submission_id,
   recipe_id,
 }: GetSubmissionProps): Promise<{ message: string; data: any }> => {
+  console.log("submission_id", submission_id);
   try {
     const authHeaders = await getAuthHeaders();
     const response = await axios.get(
-      `${BACKEND_API_URL}/submission/${submission_id}/${recipe_id}`,
+      `${BACKEND_API_URL}/submission/${submission_id}?recipe_id=${encodeURIComponent(recipe_id)}`,
       {
         headers: {
           "Content-Type": "application/json",

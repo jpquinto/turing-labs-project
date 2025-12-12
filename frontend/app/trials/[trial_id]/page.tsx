@@ -90,9 +90,6 @@ export default function TrialDetailPage() {
   }
 
   const completedSubmissions = submissions.filter(s => s.status === 'saved').length;
-  const completionRate = recipes.length > 0 
-    ? Math.round((completedSubmissions / (recipes.length * 4)) * 100) 
-    : 0;
 
   return (
     <div className="min-h-screen">
@@ -111,14 +108,14 @@ export default function TrialDetailPage() {
               <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2">
                 {trial.trial_name}
               </h1>
-              {/* <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-zinc-600 dark:text-zinc-400">
                 {new Date(trial.trial_date).toLocaleDateString('en-US', { 
                   weekday: 'long', 
                   year: 'numeric', 
                   month: 'long', 
                   day: 'numeric' 
                 })}
-              </p> */}
+              </p>
             </div>
             <div className="flex items-center gap-3">
               <Badge
@@ -160,20 +157,6 @@ export default function TrialDetailPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardDescription>Progress</CardDescription>
-              <CardTitle className="text-3xl">{completionRate}%</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all"
-                  style={{ width: `${completionRate}%` }}
-                />
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Recipes Section */}
@@ -200,14 +183,13 @@ export default function TrialDetailPage() {
               {recipes.map((recipe) => (
                 <Link
                   key={recipe.recipe_id}
-                  href={`/recipes/${recipe.recipe_id}`}
+                  href={`/trials/${trialId}/recipes/${recipe.recipe_id}`}
                 >
                   <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                     <CardHeader>
                       <CardTitle className="text-lg">
                         {recipe.recipe_name}
                       </CardTitle>
-                      {/* <CardDescription>ID: {recipe.recipe_id.slice(0, 8)}</CardDescription> */}
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2 text-sm">
@@ -265,7 +247,7 @@ export default function TrialDetailPage() {
             </Card>
           ) : (
             <Card>
-              <CardContent className="p-0">
+              <CardContent className="px-5">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -307,7 +289,7 @@ export default function TrialDetailPage() {
             </h2>
             <Button
               variant="outline"
-              onClick={() => router.push("/submissions")}
+              onClick={() => router.push(`/trials/${trialId}/submissions`)}
             >
               View All
             </Button>
@@ -323,7 +305,7 @@ export default function TrialDetailPage() {
             </Card>
           ) : (
             <Card>
-              <CardContent className="p-0">
+              <CardContent className="px-5">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -366,7 +348,7 @@ export default function TrialDetailPage() {
                           })}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Link href={`/submissions/${submission.submission_id}`}>
+                          <Link href={`/trials/${trialId}/submissions/${submission.submission_id}`}>
                             <Button variant="ghost" size="sm">
                               View
                             </Button>

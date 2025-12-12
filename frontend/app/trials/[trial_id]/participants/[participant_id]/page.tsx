@@ -14,6 +14,7 @@ import { getSubmissionsByParticipant } from '@/actions/submissions';
 export default function ParticipantDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const trialId = params.trial_id as string;
   const participantId = params.participant_id as string;
 
   const [participant, setParticipant] = useState<Participant | null>(null);
@@ -22,7 +23,9 @@ export default function ParticipantDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadParticipantData();
+    if (participantId) {
+      loadParticipantData();
+    }
   }, [participantId]);
 
   const loadParticipantData = async () => {
@@ -60,7 +63,7 @@ export default function ParticipantDetailPage() {
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <p className="text-red-800 dark:text-red-200">{error || 'Participant not found'}</p>
           </div>
-          <Button onClick={() => router.push('/participants')} className="mt-4" variant="outline">
+          <Button onClick={() => router.push(`/trials/${trialId}/participants`)} className="mt-4" variant="outline">
             ← Back to Participants
           </Button>
         </main>
@@ -77,7 +80,7 @@ export default function ParticipantDetailPage() {
       <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <Button onClick={() => router.push('/participants')} variant="ghost" className="mb-4">
+          <Button onClick={() => router.push(`/trials/${trialId}/participants`)} variant="ghost" className="mb-4">
             ← Back to Participants
           </Button>
           <div className="flex justify-between items-start">
@@ -96,39 +99,16 @@ export default function ParticipantDetailPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-4 mb-8">
-          <Card>
-            <CardHeader>
-              <CardDescription>Tasks Assigned</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Total tasks
-              </p>
-            </CardContent>
-          </Card>
-
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-8">
           <Card>
             <CardHeader>
               <CardDescription>Tasks Completed</CardDescription>
+              <CardTitle className="text-3xl">{participant.tasks_completed}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Finished tasks
               </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardDescription>Progress</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-2">
-                <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all" 
-                />
-              </div>
             </CardContent>
           </Card>
 
@@ -186,7 +166,7 @@ export default function ParticipantDetailPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {submissions.map((submission) => (
-                <Link key={submission.submission_id} href={`/submissions/${submission.submission_id}`}>
+                <Link key={submission.submission_id} href={`/trials/${trialId}/submissions/${submission.submission_id}`}>
                   <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                     <CardHeader>
                       <div className="flex justify-between items-start">

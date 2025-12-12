@@ -24,7 +24,7 @@ export const updateSubmission = async ({
   try {
     const authHeaders = await getAuthHeaders();
     const response = await axios.patch(
-      `${BACKEND_API_URL}/submission/${submission_id}/${recipe_id}`,
+      `${BACKEND_API_URL}/submission/${submission_id}?recipe_id=${encodeURIComponent(recipe_id)}`,
       updates,
       {
         headers: {

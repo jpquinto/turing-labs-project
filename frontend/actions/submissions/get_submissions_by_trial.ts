@@ -18,8 +18,6 @@ export const getSubmissionsByTrial = async ({
 }> => {
   try {
     const authHeaders = await getAuthHeaders();
-
-    console.log("authHeaders", authHeaders);
     const response = await axios.get(
       `${BACKEND_API_URL}/submission?trial_id=${encodeURIComponent(trial_id)}`,
       {

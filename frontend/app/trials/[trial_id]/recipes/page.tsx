@@ -1,26 +1,32 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Recipe } from '@/types';
-import { getRecipes } from '@/actions/recipes';
+import { getRecipesByTrial } from '@/actions/recipes';
 
 export default function RecipesPage() {
+  const params = useParams();
+  const trialId = params.trial_id as string;
+  
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadRecipes();
-  }, []);
+    if (trialId) {
+      loadRecipes();
+    }
+  }, [trialId]);
 
   const loadRecipes = async () => {
     try {
       setLoading(true);
-      const response = await getRecipes();
+      const response = await getRecipesByTrial({ trial_id: trialId });
       setRecipes(response.data);
       setError(null);
     } catch (err) {
@@ -36,6 +42,11 @@ export default function RecipesPage() {
       <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex justify-between items-center">
           <div>
+            <Link href={`/trials/${trialId}`}>
+              <Button variant="ghost" className="mb-4">
+                ← Back to Trial
+              </Button>
+            </Link>
             <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2">
               Recipes
             </h1>
@@ -43,7 +54,9 @@ export default function RecipesPage() {
               Sugar reduction recipe formulations
             </p>
           </div>
-          <Button>Create New Recipe</Button>
+          <Link href={`/trials/${trialId}/recipes/new`}>
+            <Button>Create New Recipe</Button>
+          </Link>
         </div>
 
         {loading && (
@@ -71,7 +84,7 @@ export default function RecipesPage() {
         {!loading && !error && recipes.length > 0 && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {recipes.map((recipe) => (
-              <Link key={recipe.recipe_id} href={`/recipes/${recipe.recipe_id}`}>
+              <Link key={recipe.recipe_id} href={`/trials/${trialId}/recipes/${recipe.recipe_id}`}>
                 <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                   <CardHeader>
                     <CardTitle>{recipe.recipe_name}</CardTitle>

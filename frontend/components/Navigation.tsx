@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -20,7 +21,7 @@ export default function Navigation() {
           <div className="flex">
             <div className="shrink-0 flex items-center">
               <Link href="/" className="text-xl font-bold text-zinc-900 dark:text-white">
-                Turing Labs
+                <Image src="/logo.jpg" alt="Turing Labs" width={100} height={100} unoptimized/>
               </Link>
             </div>
             {session && (

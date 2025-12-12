@@ -10,27 +10,6 @@ export default function Home() {
       icon: "🧪",
       stats: "View all trials"
     },
-    {
-      title: "Recipes",
-      description: "Sugar reduction recipe formulations",
-      href: "/recipes",
-      icon: "📝",
-      stats: "View all recipes"
-    },
-    {
-      title: "Participants",
-      description: "Trial participants and their assignments",
-      href: "/participants",
-      icon: "👥",
-      stats: "View all participants"
-    },
-    {
-      title: "Submissions",
-      description: "Participant taste test submissions and scores",
-      href: "/submissions",
-      icon: "📊",
-      stats: "View all submissions"
-    },
   ];
 
   return (

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,22 +15,27 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Submission } from '@/types';
-import { getSubmissions } from '@/actions/submissions';
+import { getSubmissionsByTrial } from '@/actions/submissions';
 
 export default function SubmissionsPage() {
+  const params = useParams();
+  const trialId = params.trial_id as string;
+  
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'saved' | 'draft'>('all');
 
   useEffect(() => {
-    loadSubmissions();
-  }, []);
+    if (trialId) {
+      loadSubmissions();
+    }
+  }, [trialId]);
 
   const loadSubmissions = async () => {
     try {
       setLoading(true);
-      const response = await getSubmissions();
+      const response = await getSubmissionsByTrial({ trial_id: trialId });
       setSubmissions(response.data);
       setError(null);
     } catch (err) {
@@ -55,6 +61,11 @@ export default function SubmissionsPage() {
     <div className="min-h-screen">
       <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
+          <Link href={`/trials/${trialId}`}>
+            <Button variant="ghost" className="mb-4">
+              ← Back to Trial
+            </Button>
+          </Link>
           <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2">
             Submissions
           </h1>
@@ -177,7 +188,6 @@ export default function SubmissionsPage() {
                   <TableRow>
                     <TableHead>Participant</TableHead>
                     <TableHead>Recipe</TableHead>
-                    <TableHead>Trial</TableHead>
                     <TableHead className="text-right">Score</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Last Updated</TableHead>
@@ -193,9 +203,6 @@ export default function SubmissionsPage() {
                       <TableCell className="font-mono text-sm">
                         {submission.recipe_id.slice(0, 8)}
                       </TableCell>
-                      <TableCell className="font-mono text-sm">
-                        {submission.trial_id.slice(0, 8)}
-                      </TableCell>
                       <TableCell className="text-right">
                         <span className="text-lg font-semibold">{submission.score}/10</span>
                       </TableCell>
@@ -208,7 +215,7 @@ export default function SubmissionsPage() {
                         {new Date(submission.last_updated).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Link href={`/submissions/${submission.submission_id}`}>
+                        <Link href={`/trials/${trialId}/submissions/${submission.submission_id}`}>
                           <Button variant="ghost" size="sm">View</Button>
                         </Link>
                       </TableCell>

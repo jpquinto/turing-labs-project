@@ -38,8 +38,23 @@ def handler(event, context):
 
         # GET endpoint - retrieve participant by ID or by code
         if http_method == 'GET':
-            # Check if querying by trial_id
-            if 'trial_id' in query_params:
+            if 'id' in path_params:
+                participant_id = path_params['id']
+                participant = service.get_participant_by_id(participant_id)
+
+                if not participant:
+                    return create_response(404, {
+                        'error': 'Participant not found',
+                        'message': f'No participant found with ID: {participant_id}'
+                    })
+
+                return create_response(200, {
+                    'message': 'Participant retrieved successfully',
+                    'data': participant
+                })
+
+            # Query by trial_id (without path param)
+            elif 'trial_id' in query_params and 'id' not in path_params:
                 trial_id = query_params['trial_id']
                 participants = service.query_participants_by_trial(trial_id)
 
@@ -49,7 +64,7 @@ def handler(event, context):
                     'count': len(participants)
                 })
 
-            # Check if querying by code (using query parameter)
+            # Query by code
             elif 'code' in query_params:
                 code = query_params['code']
                 participant = service.get_participant_by_code(code)
@@ -65,26 +80,10 @@ def handler(event, context):
                     'data': participant
                 })
 
-            # Query by participant_id (path parameter)
-            elif 'participant_id' in path_params:
-                participant_id = path_params['participant_id']
-                participant = service.get_participant_by_id(participant_id)
-
-                if not participant:
-                    return create_response(404, {
-                        'error': 'Participant not found',
-                        'message': f'No participant found with ID: {participant_id}'
-                    })
-
-                return create_response(200, {
-                    'message': 'Participant retrieved successfully',
-                    'data': participant
-                })
-
             else:
                 return create_response(400, {
                     'error': 'Bad Request',
-                    'message': 'Must provide either participant_id in path, code in query parameters, or trial_id in query parameters'
+                    'message': 'Must provide either id in path parameter, trial_id in query parameters, or code in query parameters'
                 })
 
         # POST endpoint - create new participant

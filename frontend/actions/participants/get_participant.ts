@@ -14,7 +14,6 @@ export const getParticipant = async ({
 }: GetParticipantProps): Promise<{ message: string; data: any }> => {
   try {
     const authHeaders = await getAuthHeaders();
-
     const response = await axios.get(
       `${BACKEND_API_URL}/participant/${participant_id}`,
       {

@@ -38,8 +38,25 @@ def handler(event, context):
 
         # GET endpoint - retrieve submission by ID or query by recipe/trial/participant
         if http_method == 'GET':
-            # Query by recipe_id
-            if 'recipe_id' in query_params:
+            # Get by submission_id (with recipe_id in query params)
+            if 'id' in path_params and 'recipe_id' in query_params:
+                submission_id = path_params['id'].replace("%20", " ")
+                recipe_id = query_params['recipe_id'].replace("%20", " ")
+                submission = service.get_submission_by_id(submission_id, recipe_id)
+
+                if not submission:
+                    return create_response(404, {
+                        'error': 'Submission not found',
+                        'message': f'No submission found with submission_id: {submission_id} and recipe_id: {recipe_id}'
+                    })
+
+                return create_response(200, {
+                    'message': 'Submission retrieved successfully',
+                    'data': submission
+                })
+
+            # Query by recipe_id (without path param)
+            elif 'recipe_id' in query_params and 'id' not in path_params:
                 recipe_id = query_params['recipe_id']
                 submissions = service.query_submissions_by_recipe(recipe_id)
 
@@ -71,27 +88,10 @@ def handler(event, context):
                     'count': len(submissions)
                 })
 
-            # Get by submission_id and recipe_id
-            elif 'submission_id' in path_params and 'recipe_id' in path_params:
-                submission_id = path_params['submission_id']
-                recipe_id = path_params['recipe_id']
-                submission = service.get_submission_by_id(submission_id, recipe_id)
-
-                if not submission:
-                    return create_response(404, {
-                        'error': 'Submission not found',
-                        'message': f'No submission found with submission_id: {submission_id} and recipe_id: {recipe_id}'
-                    })
-
-                return create_response(200, {
-                    'message': 'Submission retrieved successfully',
-                    'data': submission
-                })
-
             else:
                 return create_response(400, {
                     'error': 'Bad Request',
-                    'message': 'Must provide either query parameters (recipe_id, trial_id, or participant_id) or path parameters (submission_id and recipe_id)'
+                    'message': 'Must provide either query parameters (recipe_id, trial_id, or participant_id) for listing, or path parameter (id) with recipe_id query parameter for single submission'
                 })
 
         # POST endpoint - create new submission
@@ -156,15 +156,15 @@ def handler(event, context):
 
         # PATCH endpoint - update existing submission
         elif http_method == 'PATCH':
-            # Get IDs from path
-            if 'submission_id' not in path_params or 'recipe_id' not in path_params:
+            # Get IDs from path and query params
+            if 'id' not in path_params or 'recipe_id' not in query_params:
                 return create_response(400, {
                     'error': 'Bad Request',
-                    'message': 'Must provide submission_id and recipe_id in path'
+                    'message': 'Must provide id in path and recipe_id in query parameters'
                 })
 
-            submission_id = path_params['submission_id']
-            recipe_id = path_params['recipe_id']
+            submission_id = path_params['id']
+            recipe_id = query_params['recipe_id']
 
             try:
                 body = json.loads(event.get('body', '{}'))

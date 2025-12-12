@@ -13,6 +13,7 @@ import { getSubmission } from '@/actions/submissions';
 export default function SubmissionDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const trialId = params.trial_id as string;
   const submissionId = params.submission_id as string;
 
   const [submission, setSubmission] = useState<Submission | null>(null);
@@ -20,21 +21,27 @@ export default function SubmissionDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadSubmissionData();
+    if (submissionId) {
+      loadSubmissionData();
+    }
   }, [submissionId]);
 
   const loadSubmissionData = async () => {
     try {
       setLoading(true);
-      // Note: getSubmission requires both submission_id and recipe_id (composite key)
-      // For now, we'll need to get the recipe_id from the URL params or from a list
-      // TODO: Update URL structure to /submissions/[submission_id]/[recipe_id] or use a different lookup method
-      // const submissionResponse = await getSubmission({ submission_id: submissionId, recipe_id: recipeId });
-      // setSubmission(submissionResponse.data);
+      const decodedSubmissionId = decodeURIComponent(submissionId);
+      const parts = decodedSubmissionId.split("::");
+      if (parts.length !== 3) {
+        throw new Error('Invalid submission ID format');
+      }
+      const recipeId = parts[1];
       
-      // Temporary: Set error until we have the recipe_id
-      setError('Submission detail page requires recipe_id. Navigate from a trial or participant to view submission details.');
-      setSubmission(null);
+      const submissionResponse = await getSubmission({
+        submission_id: decodedSubmissionId,
+        recipe_id: recipeId,
+      });
+      setSubmission(submissionResponse.data);
+      setError(null);
     } catch (err) {
       setError('Failed to load submission data. Please try again.');
       console.error(err);
@@ -60,7 +67,7 @@ export default function SubmissionDetailPage() {
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
             <p className="text-red-800 dark:text-red-200">{error || 'Submission not found'}</p>
           </div>
-          <Button onClick={() => router.push('/submissions')} className="mt-4" variant="outline">
+          <Button onClick={() => router.push(`/trials/${trialId}/submissions`)} className="mt-4" variant="outline">
             ← Back to Submissions
           </Button>
         </main>
@@ -73,7 +80,7 @@ export default function SubmissionDetailPage() {
       <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <Button onClick={() => router.push('/submissions')} variant="ghost" className="mb-4">
+          <Button onClick={() => router.push(`/trials/${trialId}/submissions`)} variant="ghost" className="mb-4">
             ← Back to Submissions
           </Button>
           <div className="flex justify-between items-start">
@@ -127,7 +134,7 @@ export default function SubmissionDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Link href={`/participants/${submission.participant_id}`}>
+              <Link href={`/trials/${trialId}/participants/${submission.participant_id}`}>
                 <Button variant="outline" size="sm" className="w-full">
                   View Participant
                 </Button>
@@ -143,7 +150,7 @@ export default function SubmissionDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Link href={`/recipes/${submission.recipe_id}`}>
+              <Link href={`/trials/${trialId}/recipes/${submission.recipe_id}`}>
                 <Button variant="outline" size="sm" className="w-full">
                   View Recipe
                 </Button>

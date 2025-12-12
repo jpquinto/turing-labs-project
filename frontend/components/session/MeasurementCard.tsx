@@ -281,8 +281,8 @@ export default function MeasurementCard({
             </>
           ) : (
             <>
-              <Save className="h-4 w-4 mr-2" />
-              Save Measurement
+              <Save className="h-4 w-4" />
+              Save
             </>
           )}
         </Button>

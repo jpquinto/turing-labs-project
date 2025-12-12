@@ -17,7 +17,7 @@ export const getRecipe = async ({
   try {
     const authHeaders = await getAuthHeaders();
     const response = await axios.get(
-      `${BACKEND_API_URL}/recipe/${recipe_id}/${trial_id}`,
+      `${BACKEND_API_URL}/recipe/${recipe_id}?trial_id=${encodeURIComponent(trial_id)}`,
       {
         headers: {
           "Content-Type": "application/json",
