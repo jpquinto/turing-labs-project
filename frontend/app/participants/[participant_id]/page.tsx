@@ -68,10 +68,6 @@ export default function ParticipantDetailPage() {
     );
   }
 
-  const progress = participant.tasks_assigned > 0
-    ? Math.round((participant.tasks_completed / participant.tasks_assigned) * 100)
-    : 0;
-
   const avgScore = submissions.length > 0
     ? submissions.reduce((sum, s) => sum + s.score, 0) / submissions.length
     : 0;
@@ -104,7 +100,6 @@ export default function ParticipantDetailPage() {
           <Card>
             <CardHeader>
               <CardDescription>Tasks Assigned</CardDescription>
-              <CardTitle className="text-3xl">{participant.tasks_assigned}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -116,7 +111,6 @@ export default function ParticipantDetailPage() {
           <Card>
             <CardHeader>
               <CardDescription>Tasks Completed</CardDescription>
-              <CardTitle className="text-3xl">{participant.tasks_completed}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -128,13 +122,11 @@ export default function ParticipantDetailPage() {
           <Card>
             <CardHeader>
               <CardDescription>Progress</CardDescription>
-              <CardTitle className="text-3xl">{progress}%</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-2">
                 <div 
                   className="bg-blue-600 h-2 rounded-full transition-all" 
-                  style={{ width: `${progress}%` }}
                 />
               </div>
             </CardContent>

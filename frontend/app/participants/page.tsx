@@ -97,9 +97,6 @@ export default function ParticipantsPage() {
                 </TableHeader>
                 <TableBody>
                   {participants.map((participant) => {
-                    const progress = participant.tasks_assigned > 0
-                      ? Math.round((participant.tasks_completed / participant.tasks_assigned) * 100)
-                      : 0;
 
                     return (
                       <TableRow key={participant.participant_id}>
@@ -112,19 +109,7 @@ export default function ParticipantsPage() {
                         <TableCell className="font-mono text-sm text-zinc-600 dark:text-zinc-400">
                           {participant.trial_id.slice(0, 8)}
                         </TableCell>
-                        <TableCell className="text-right">{participant.tasks_assigned}</TableCell>
                         <TableCell className="text-right">{participant.tasks_completed}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <div className="w-20 bg-zinc-200 dark:bg-zinc-800 rounded-full h-2">
-                              <div 
-                                className="bg-blue-600 h-2 rounded-full transition-all" 
-                                style={{ width: `${progress}%` }}
-                              />
-                            </div>
-                            <span className="text-sm font-medium">{progress}%</span>
-                          </div>
-                        </TableCell>
                         <TableCell className="text-right">
                           <Link href={`/participants/${participant.participant_id}`}>
                             <Button variant="ghost" size="sm">View</Button>
