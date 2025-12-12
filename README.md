@@ -49,7 +49,7 @@ The only thing implemented for CICD so far is a GitHub Actions workflow that wil
 ## Infrastructure + Hosting
 Most of the infrastructure is hosted on AWS. Terraform was used to deploy everything except a secret in Secrets Manager, which I manually set up.
 
-The Terraform /infra folder has a component modules folder that has re-usable module for different AWS services. They handle building, packaging and uploading lambda function code (in Python and JavaScript) to S3, and deploying new API Gateway stages from one `terraform apply`.
+The Terraform /infra folder has a component modules folder that has re-usable module for different AWS services. They handle building, packaging and uploading lambda function code (in Python and JavaScript) and lambda layers to S3, and deploying new API Gateway stages from one `terraform apply`.
 
 The frontend is hosted on Vercel, as I've found that more reliable for hosting Next.js projects in the past.
 
