@@ -1,0 +1,33 @@
+/user:
+  $ref: './users/user.yaml'
+
+/participant:
+  $ref: './participants/participants.yaml'
+
+/participant/{id}:
+  $ref: './participants/participants_id.yaml'
+
+/recipe:
+  $ref: './recipes/recipes.yaml'
+
+/recipe/{id}:
+  $ref: './recipes/recipes_id.yaml'
+
+/trial:
+  $ref: './trials/trials.yaml'
+
+/trial/{id}:
+  $ref: './trials/trials_id.yaml'
+
+/submission:
+  $ref: './submissions/submissions.yaml'
+
+/submission/{id}:
+  $ref: './submissions/submissions_id.yaml'
+
+/voice-memo:
+  $ref: './voice_memos/voice_memo.yaml'
+
+/transcribe:
+  $ref: './voice_memos/transcribe.yaml'
+

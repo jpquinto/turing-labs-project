@@ -1,0 +1,63 @@
+post:
+  tags:
+    - Transcription
+  summary: Transcribe voice memo
+  description: |
+    Transcribe a voice memo using AWS Transcribe. This endpoint starts a transcription job
+    and polls for completion (up to 5 minutes). The transcription text is then stored in the submission.
+  operationId: transcribeVoiceMemo
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - submission_id
+            - voice_memo_key
+            - recipe_id
+          properties:
+            submission_id:
+              type: string
+              description: ID of the submission associated with this voice memo
+              example: "participant-123::recipe-456::Overall Taste"
+            voice_memo_key:
+              type: string
+              description: S3 key of the voice memo to transcribe
+              example: "voice-memos/12345.webm"
+            recipe_id:
+              type: string
+              format: uuid
+              description: ID of the recipe being evaluated
+  responses:
+    '200':
+      description: Voice memo transcribed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Transcription completed and submission updated"
+              submission_id:
+                type: string
+                description: ID of the updated submission
+              transcription:
+                type: string
+                description: Transcribed text from the voice memo
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/Unauthorized'
+    '500':
+      $ref: '../../openapi.yaml#/components/responses/InternalError'
+    '504':
+      description: Transcription timed out
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yaml#/components/schemas/Error'
+

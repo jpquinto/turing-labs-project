@@ -1,20 +1,20 @@
 get:
   tags:
-    - Participants
-  summary: Get participant by ID
-  description: Retrieve a specific participant by their participant_id
-  operationId: getParticipantById
+    - Submissions
+  summary: Get submission by ID
+  description: Retrieve a specific submission by submission_id
+  operationId: getSubmissionById
   security:
     - BearerAuth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/ParticipantId'
+    - $ref: '../../openapi.yaml#/components/parameters/SubmissionId'
   responses:
     '200':
-      description: Participant retrieved successfully
+      description: Submission retrieved successfully
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yaml#/components/schemas/Participant'
+            $ref: '../../openapi.yaml#/components/schemas/Submission'
     '401':
       $ref: '../../openapi.yaml#/components/responses/Unauthorized'
     '404':
@@ -24,27 +24,27 @@ get:
 
 put:
   tags:
-    - Participants
-  summary: Update a participant
-  description: Update an existing participant's information
-  operationId: updateParticipant
+    - Submissions
+  summary: Update a submission
+  description: Update an existing submission's information
+  operationId: updateSubmission
   security:
     - BearerAuth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/ParticipantId'
+    - $ref: '../../openapi.yaml#/components/parameters/SubmissionId'
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yaml#/components/schemas/UpdateParticipantRequest'
+          $ref: '../../openapi.yaml#/components/schemas/UpdateSubmissionRequest'
   responses:
     '200':
-      description: Participant updated successfully
+      description: Submission updated successfully
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yaml#/components/schemas/Participant'
+            $ref: '../../openapi.yaml#/components/schemas/Submission'
     '400':
       $ref: '../../openapi.yaml#/components/responses/BadRequest'
     '401':
@@ -56,17 +56,17 @@ put:
 
 delete:
   tags:
-    - Participants
-  summary: Delete a participant
-  description: Delete a participant by their participant_id
-  operationId: deleteParticipant
+    - Submissions
+  summary: Delete a submission
+  description: Delete a submission by submission_id
+  operationId: deleteSubmission
   security:
     - BearerAuth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/ParticipantId'
+    - $ref: '../../openapi.yaml#/components/parameters/SubmissionId'
   responses:
     '200':
-      description: Participant deleted successfully
+      description: Submission deleted successfully
       content:
         application/json:
           schema:
@@ -74,7 +74,7 @@ delete:
             properties:
               message:
                 type: string
-                example: Participant deleted successfully
+                example: Submission deleted successfully
     '401':
       $ref: '../../openapi.yaml#/components/responses/Unauthorized'
     '404':

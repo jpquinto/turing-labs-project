@@ -1,20 +1,20 @@
 get:
   tags:
-    - Participants
-  summary: Get participant by ID
-  description: Retrieve a specific participant by their participant_id
-  operationId: getParticipantById
+    - Trials
+  summary: Get trial by ID
+  description: Retrieve a specific trial by trial_id
+  operationId: getTrialById
   security:
     - BearerAuth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/ParticipantId'
+    - $ref: '../../openapi.yaml#/components/parameters/TrialId'
   responses:
     '200':
-      description: Participant retrieved successfully
+      description: Trial retrieved successfully
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yaml#/components/schemas/Participant'
+            $ref: '../../openapi.yaml#/components/schemas/Trial'
     '401':
       $ref: '../../openapi.yaml#/components/responses/Unauthorized'
     '404':
@@ -24,27 +24,27 @@ get:
 
 put:
   tags:
-    - Participants
-  summary: Update a participant
-  description: Update an existing participant's information
-  operationId: updateParticipant
+    - Trials
+  summary: Update a trial
+  description: Update an existing trial's information
+  operationId: updateTrial
   security:
     - BearerAuth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/ParticipantId'
+    - $ref: '../../openapi.yaml#/components/parameters/TrialId'
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yaml#/components/schemas/UpdateParticipantRequest'
+          $ref: '../../openapi.yaml#/components/schemas/UpdateTrialRequest'
   responses:
     '200':
-      description: Participant updated successfully
+      description: Trial updated successfully
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yaml#/components/schemas/Participant'
+            $ref: '../../openapi.yaml#/components/schemas/Trial'
     '400':
       $ref: '../../openapi.yaml#/components/responses/BadRequest'
     '401':
@@ -56,17 +56,17 @@ put:
 
 delete:
   tags:
-    - Participants
-  summary: Delete a participant
-  description: Delete a participant by their participant_id
-  operationId: deleteParticipant
+    - Trials
+  summary: Delete a trial
+  description: Delete a trial by trial_id
+  operationId: deleteTrial
   security:
     - BearerAuth: []
   parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/ParticipantId'
+    - $ref: '../../openapi.yaml#/components/parameters/TrialId'
   responses:
     '200':
-      description: Participant deleted successfully
+      description: Trial deleted successfully
       content:
         application/json:
           schema:
@@ -74,7 +74,7 @@ delete:
             properties:
               message:
                 type: string
-                example: Participant deleted successfully
+                example: Trial deleted successfully
     '401':
       $ref: '../../openapi.yaml#/components/responses/Unauthorized'
     '404':

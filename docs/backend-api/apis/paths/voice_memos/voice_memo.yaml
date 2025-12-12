@@ -1,0 +1,52 @@
+post:
+  tags:
+    - Voice Memos
+  summary: Upload voice memo
+  description: Generate a pre-signed URL for uploading a voice memo to S3
+  operationId: uploadVoiceMemo
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - filename
+            - content_type
+          properties:
+            filename:
+              type: string
+              description: Name of the voice memo file
+              example: "voice-memo-123.webm"
+            content_type:
+              type: string
+              description: MIME type of the audio file
+              example: "audio/webm"
+  responses:
+    '200':
+      description: Pre-signed upload URL generated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              upload_url:
+                type: string
+                format: uri
+                description: Pre-signed S3 URL for uploading the voice memo
+              s3_key:
+                type: string
+                description: S3 object key where the file will be stored
+              expires_in:
+                type: integer
+                description: URL expiration time in seconds
+                example: 300
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/Unauthorized'
+    '500':
+      $ref: '../../openapi.yaml#/components/responses/InternalError'
+

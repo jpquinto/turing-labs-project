@@ -1,0 +1,28 @@
+post:
+  tags:
+    - Users
+  summary: Create a new user
+  description: Create a new user account. This endpoint uses webhook authentication.
+  operationId: createUser
+  security:
+    - Auth0Webhook: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yaml#/components/schemas/CreateUserRequest'
+  responses:
+    '200':
+      description: User created successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yaml#/components/schemas/User'
+    '400':
+      $ref: '../../openapi.yaml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/Unauthorized'
+    '500':
+      $ref: '../../openapi.yaml#/components/responses/InternalError'
+

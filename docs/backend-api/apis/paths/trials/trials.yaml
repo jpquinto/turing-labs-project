@@ -1,31 +1,26 @@
 get:
   tags:
-    - Recipes
-  summary: Get all recipes
-  description: Retrieve all recipes. Can filter by trial_id using query parameter.
-  operationId: getRecipes
+    - Trials
+  summary: Get all trials
+  description: Retrieve all trials in the system
+  operationId: getTrials
   security:
     - BearerAuth: []
-  parameters:
-    - name: trial_id
-      in: query
-      description: Filter recipes by trial ID
-      required: false
-      schema:
-        type: string
-        format: uuid
   responses:
     '200':
-      description: List of recipes retrieved successfully
+      description: List of trials retrieved successfully
       content:
         application/json:
           schema:
             type: object
             properties:
-              recipes:
+              trials:
                 type: array
                 items:
-                  $ref: '../../openapi.yaml#/components/schemas/Recipe'
+                  $ref: '../../openapi.yaml#/components/schemas/Trial'
+              count:
+                type: integer
+                description: Total number of trials
     '401':
       $ref: '../../openapi.yaml#/components/responses/Unauthorized'
     '500':
@@ -33,10 +28,10 @@ get:
 
 post:
   tags:
-    - Recipes
-  summary: Create a new recipe
-  description: Create a new recipe for a trial
-  operationId: createRecipe
+    - Trials
+  summary: Create a new trial
+  description: Create a new taste testing trial
+  operationId: createTrial
   security:
     - BearerAuth: []
   requestBody:
@@ -44,14 +39,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yaml#/components/schemas/CreateRecipeRequest'
+          $ref: '../../openapi.yaml#/components/schemas/CreateTrialRequest'
   responses:
     '200':
-      description: Recipe created successfully
+      description: Trial created successfully
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yaml#/components/schemas/Recipe'
+            $ref: '../../openapi.yaml#/components/schemas/Trial'
     '400':
       $ref: '../../openapi.yaml#/components/responses/BadRequest'
     '401':
