@@ -5,18 +5,9 @@ import json
 
 
 def handler(event, context):
-    # Add comprehensive logging
-    print("=== Authorizer Event ===")
-    print(json.dumps(event, indent=2))
-    
     expected_secret = os.environ.get("AUTH0_WEBHOOK_SECRET")
-    print(f"Expected secret exists: {bool(expected_secret)}")
     
-    # For TOKEN type authorizer, the token comes from event['authorizationToken']
     provided_secret = event.get("authorizationToken")
-    
-    print(f"Provided secret exists: {bool(provided_secret)}")
-    print(f"Provided secret value: {provided_secret}")
     
     if not expected_secret:
         print("ERROR: AUTH0_WEBHOOK_SECRET environment variable not set")
@@ -26,7 +17,6 @@ def handler(event, context):
         print("ERROR: No authorization token found in request")
         return generate_policy("Deny", event["methodArn"])
     
-    # Use constant-time comparison
     if hmac.compare_digest(provided_secret, expected_secret):
         print("Authorization successful - secrets match")
         return generate_policy("Allow", event["methodArn"])

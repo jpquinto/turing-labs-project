@@ -14,7 +14,6 @@ def handler(event, context):
     try:
         print(f"Received event: {json.dumps(event)}")
         
-        # Parse API Gateway request body
         if 'body' in event:
             body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
         else:
@@ -41,7 +40,6 @@ def handler(event, context):
                 })
             }
         
-        # Get environment variables
         voice_memo_bucket = os.environ.get('VOICE_MEMO_BUCKET')
         submissions_table = os.environ.get('SUBMISSIONS_TABLE_NAME')
         
@@ -66,8 +64,6 @@ def handler(event, context):
         table = dynamodb.Table(submissions_table)
         
         # Start transcription job
-        # Sanitize submission_id to only include valid characters (alphanumeric, period, underscore, hyphen)
-        # Replace colons and spaces with hyphens
         sanitized_submission_id = submission_id.replace('::', '-').replace(':', '-').replace(' ', '-')
         job_name = f"transcribe-{sanitized_submission_id}-{uuid.uuid4().hex[:8]}"
         media_uri = f"s3://{voice_memo_bucket}/{voice_memo_key}"
