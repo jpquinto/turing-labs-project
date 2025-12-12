@@ -5,7 +5,7 @@ This project is a basic demo/POC of a web app where formulators can log user fee
 Proctors can login and collect user feedback, scoring attributes of each of the recipes for the trial. They can add text notes, or choose to create voice memos.
 
 ## Storage
-DynamoDB was used for storing data on participants, users, recipes, trials, and submissions. Each entity has its own table.
+DynamoDB was used for storing data on participants, users, recipes, trials, and submissions. Each entity has its own table with varying primary/sort keys depending on access patterns.
 
 S3 was used for storing voice memos.
 
@@ -21,9 +21,9 @@ The frontend was created with Next.js + Tailwind.
 - Uses Next.js v15.x.x
 
 ## Backend
-The backend API is built using API Gateway + Lambda. It has endpoints for each entity, but not *all* CRUD endpoints are implemented yet.
+The backend API is built using API Gateway + Lambda. It has endpoints for each entity, but not *all* CRUD endpoints are implemented yet (some are missing PATCH endpoints as I didn't implement the pages on the frontend)
 
-Each entity has its own lambda handler (e.g. recipes, trials). Each lambda handler has a controller layer that handles the HTTP request, and a service layer that handles interacting with DynamoDB (some are missing PATCH endpoints as I didn't implement the pages on the frontend).
+Each entity has its own lambda handler (e.g. recipes, trials). Each lambda handler has a controller layer that handles the HTTP request, and a service layer that handles interacting with DynamoDB.
 
 There are also endpoints for uploading voice memos, and starting transcription jobs.
 
