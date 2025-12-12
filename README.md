@@ -4,7 +4,7 @@ This project is a basic demo/POC of a web app where formulators can log user fee
 
 Proctors can login and collect user feedback, scoring attributes of each of the recipes for the trial. They can add text notes, or choose to create voice memos.
 
-[Stack](docs/resources/architecture.jpg)
+![Stack](docs/resources/architecture.jpg)
 
 ## Storage
 DynamoDB was used for storing data on participants, users, recipes, trials, and submissions. Each entity has its own table with varying primary/sort keys depending on access patterns.
@@ -16,7 +16,7 @@ S3 was used for storing voice memos.
 An Auth0 tenant was used for user management.
 - An Auth0 action automatically fires when a user signs up, calling the webhook API and creating a user in the DynamoDB database
 
-[Auth](docs/resources/authentication.jpg)
+![Auth](docs/resources/authentication.jpg)
 
 ## Frontend
 The frontend was created with Next.js + Tailwind.
@@ -47,8 +47,8 @@ In a testing session, users can record their own voice memos as an alternative t
 
 The frontend will hit the backend for a pre-signed URL to upload the voice memo to S3. Once uploaded to S3, a transcription job will start via AWS Transcribe, and the user will be able to see their transcripted voice memo (after a few seconds). This flow would likely change in an actual implementation.
 
-[Voice Memo Upload](docs/resources/voice-memo-upload-flow.jpg)
-[Voice Memo Upload](docs/resources/voice-memo-transcription-flow.jpg)
+![Voice Memo Upload](docs/resources/voice-memo-upload-flow.jpg)
+![Voice Memo Upload](docs/resources/voice-memo-transcription-flow.jpg)
 
 ## CICD
 The only thing implemented for CICD so far is a GitHub Actions workflow that will deploy the Terraform configuration on pushes to main.
