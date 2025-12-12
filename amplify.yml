@@ -1,0 +1,19 @@
+# This file is used to configure the build and deployment process for our Backend API docs for Amplify.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd docs/backend-api
+        - npm install
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: docs/backend-api/dist
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
+  nodeVersion: "20"
