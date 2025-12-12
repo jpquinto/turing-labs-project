@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { getAuthHeaders } from "@/lib/getAuthHeaders";
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
@@ -10,9 +11,11 @@ export const getParticipants = async (): Promise<{
   count: number;
 }> => {
   try {
+    const authHeaders = await getAuthHeaders();
     const response = await axios.get(`${BACKEND_API_URL}/participant`, {
       headers: {
         "Content-Type": "application/json",
+        ...authHeaders,
       },
     });
 

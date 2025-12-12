@@ -61,6 +61,16 @@ variable "auth0_webhook_secret" {
   description = "The secret for the Auth0 webhook"
 }
 
+variable "auth0_domain" {
+  type        = string
+  description = "The Auth0 domain (e.g., your-tenant.auth0.com)"
+}
+
+variable "auth0_audience" {
+  type        = string
+  description = "The Auth0 API audience identifier"
+}
+
 variable "voice_memo_bucket" {
   type        = string
   description = "The name of the S3 bucket to store voice memos"

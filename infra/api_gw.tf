@@ -19,6 +19,8 @@ module "backend" {
     user_table_arn  = module.user_table.arn
 
     auth0_webhook_secret = local.third_party_secrets.auth0_webhook_secret
+    auth0_domain         = local.third_party_secrets.auth0_domain
+    auth0_audience       = local.third_party_secrets.auth0_audience
 
     voice_memo_bucket = module.voice_memo_bucket.bucket_name
     voice_memo_bucket_arn = module.voice_memo_bucket.bucket_arn

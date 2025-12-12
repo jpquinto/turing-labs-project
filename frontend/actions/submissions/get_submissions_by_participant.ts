@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { getAuthHeaders } from "@/lib/getAuthHeaders";
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
@@ -16,11 +17,13 @@ export const getSubmissionsByParticipant = async ({
   count: number;
 }> => {
   try {
+    const authHeaders = await getAuthHeaders();
     const response = await axios.get(
       `${BACKEND_API_URL}/submission?participant_id=${encodeURIComponent(participant_id)}`,
       {
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders,
         },
       }
     );

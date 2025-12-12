@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { getAuthHeaders } from "@/lib/getAuthHeaders";
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
@@ -12,6 +13,7 @@ interface CreateSubmissionProps {
   status?: "draft" | "saved";
   notes?: string;
   voice_memo_key?: string;
+  submission_id?: string;
 }
 
 export const createSubmission = async ({
@@ -22,8 +24,10 @@ export const createSubmission = async ({
   status = "draft",
   notes,
   voice_memo_key,
+  submission_id,
 }: CreateSubmissionProps): Promise<{ message: string; data: any }> => {
   try {
+    const authHeaders = await getAuthHeaders();
     const response = await axios.post(
       `${BACKEND_API_URL}/submission`,
       {
@@ -34,10 +38,12 @@ export const createSubmission = async ({
         status,
         notes,
         voice_memo_key,
+        submission_id,
       },
       {
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders,
         },
       }
     );

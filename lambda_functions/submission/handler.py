@@ -140,7 +140,8 @@ def handler(event, context):
                     score=float(body['score']),
                     status=status,
                     notes=body.get('notes'),
-                    voice_memo_key=body.get('voice_memo_key')
+                    voice_memo_key=body.get('voice_memo_key'),
+                    submission_id=body.get('submission_id')
                 )
 
                 return create_response(201, {

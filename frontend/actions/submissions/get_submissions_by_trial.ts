@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { getAuthHeaders } from "@/lib/getAuthHeaders";
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
@@ -16,11 +17,15 @@ export const getSubmissionsByTrial = async ({
   count: number;
 }> => {
   try {
+    const authHeaders = await getAuthHeaders();
+
+    console.log("authHeaders", authHeaders);
     const response = await axios.get(
       `${BACKEND_API_URL}/submission?trial_id=${encodeURIComponent(trial_id)}`,
       {
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders,
         },
       }
     );

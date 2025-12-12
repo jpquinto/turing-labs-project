@@ -25,7 +25,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.participant_lambda.invoke_arn
             lambda_function_name = module.lambdas.participant_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "GET"
@@ -34,7 +35,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.participant_lambda.invoke_arn
             lambda_function_name = module.lambdas.participant_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "POST"
@@ -43,7 +45,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.participant_lambda.invoke_arn
             lambda_function_name = module.lambdas.participant_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "PUT"
@@ -52,7 +55,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.participant_lambda.invoke_arn
             lambda_function_name = module.lambdas.participant_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "DELETE"
@@ -61,7 +65,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.participant_lambda.invoke_arn
             lambda_function_name = module.lambdas.participant_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
 
         # Order CRUD endpoints
@@ -72,7 +77,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.recipe_lambda.invoke_arn
             lambda_function_name = module.lambdas.recipe_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "GET"
@@ -81,7 +87,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.recipe_lambda.invoke_arn
             lambda_function_name = module.lambdas.recipe_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "POST"
@@ -90,7 +97,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.recipe_lambda.invoke_arn
             lambda_function_name = module.lambdas.recipe_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "PUT"
@@ -99,7 +107,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.recipe_lambda.invoke_arn
             lambda_function_name = module.lambdas.recipe_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "DELETE"
@@ -108,7 +117,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.recipe_lambda.invoke_arn
             lambda_function_name = module.lambdas.recipe_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
 
         # Trial CRUD endpoints
@@ -119,7 +129,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
             lambda_function_name = module.lambdas.trial_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "GET"
@@ -128,7 +139,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
             lambda_function_name = module.lambdas.trial_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "POST"
@@ -137,7 +149,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
             lambda_function_name = module.lambdas.trial_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "PUT"
@@ -146,7 +159,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
             lambda_function_name = module.lambdas.trial_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "DELETE"
@@ -155,7 +169,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.trial_lambda.invoke_arn
             lambda_function_name = module.lambdas.trial_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
 
         # Submission CRUD endpoints
@@ -166,7 +181,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
             lambda_function_name = module.lambdas.submission_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "GET"
@@ -175,7 +191,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
             lambda_function_name = module.lambdas.submission_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "POST"
@@ -184,7 +201,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
             lambda_function_name = module.lambdas.submission_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "PUT"
@@ -193,7 +211,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
             lambda_function_name = module.lambdas.submission_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
         {
             http_method          = "DELETE"
@@ -202,7 +221,8 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.submission_lambda.invoke_arn
             lambda_function_name = module.lambdas.submission_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
 
         # Voice Memo endpoints
@@ -213,7 +233,20 @@ module "api_gateway" {
             lambda_invoke_arn    = module.lambdas.voice_memo_lambda.invoke_arn
             lambda_function_name = module.lambdas.voice_memo_lambda.name
             enable_cors_all      = true
-            use_authorizer       = false
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
+        },
+
+        # Transcription endpoint
+        {
+            http_method          = "POST"
+            path                 = "transcribe"
+            integration_type     = "lambda"
+            lambda_invoke_arn    = module.lambdas.transcription_lambda.invoke_arn
+            lambda_function_name = module.lambdas.transcription_lambda.name
+            enable_cors_all      = true
+            use_authorizer       = true
+            authorizer_id        = module.authorizers_jwt_auth0_authorizer.authorizer_id
         },
     ]
 

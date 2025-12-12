@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { getAuthHeaders } from "@/lib/getAuthHeaders";
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
@@ -14,6 +15,7 @@ export const createParticipant = async ({
   name,
 }: CreateParticipantProps): Promise<{ message: string; data: any }> => {
   try {
+    const authHeaders = await getAuthHeaders();
     const response = await axios.post(
       `${BACKEND_API_URL}/participant`,
       {
@@ -23,6 +25,7 @@ export const createParticipant = async ({
       {
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders,
         },
       }
     );

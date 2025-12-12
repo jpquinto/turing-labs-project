@@ -7,7 +7,7 @@ import { Mic, Square, Play, Pause, Trash2, Upload } from 'lucide-react';
 import { getVoiceMemoUploadUrl } from '@/actions/voice_memo';
 
 interface VoiceRecorderProps {
-  onUploadComplete: (s3Key: string) => void;
+  onUploadComplete: (s3Key: string, audioUrl: string, duration: number) => void;
   disabled?: boolean;
 }
 
@@ -140,11 +140,8 @@ export default function VoiceRecorder({ onUploadComplete, disabled = false }: Vo
         withCredentials: false,
       });
 
-      // Call callback with S3 key
-      onUploadComplete(response.data.s3_key);
-
-      // Clear recording after successful upload
-      deleteRecording();
+      // Call callback with S3 key, audio URL, and duration
+      onUploadComplete(response.data.s3_key, audioUrl || '', recordingTime);
 
     } catch (err) {
       console.error('Error uploading voice memo:', err);

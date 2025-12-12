@@ -9,25 +9,56 @@ from botocore.exceptions import ClientError
 def handler(event, context):
     """
     Lambda handler for transcribing voice memos
-    Invoked asynchronously with submission_id and voice_memo_key
+    API Gateway endpoint that accepts POST requests with submission_id, voice_memo_key, and recipe_id
     """
     try:
         print(f"Received event: {json.dumps(event)}")
         
-        # Extract parameters from event
-        submission_id = event.get('submission_id')
-        voice_memo_key = event.get('voice_memo_key')
-        recipe_id = event.get('recipe_id')
+        # Parse API Gateway request body
+        if 'body' in event:
+            body = json.loads(event['body']) if isinstance(event['body'], str) else event['body']
+        else:
+            # Direct invocation (for testing)
+            body = event
+
+        # Extract parameters from request body
+        submission_id = body.get('submission_id')
+        voice_memo_key = body.get('voice_memo_key')
+        recipe_id = body.get('recipe_id')
         
         if not submission_id or not voice_memo_key or not recipe_id:
-            raise ValueError("submission_id, voice_memo_key, and recipe_id are required")
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                    'Access-Control-Allow-Methods': 'POST,OPTIONS'
+                },
+                'body': json.dumps({
+                    'error': 'Bad Request',
+                    'message': 'submission_id, voice_memo_key, and recipe_id are required'
+                })
+            }
         
         # Get environment variables
         voice_memo_bucket = os.environ.get('VOICE_MEMO_BUCKET')
         submissions_table = os.environ.get('SUBMISSIONS_TABLE_NAME')
         
         if not voice_memo_bucket or not submissions_table:
-            raise ValueError("Required environment variables not set")
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                    'Access-Control-Allow-Methods': 'POST,OPTIONS'
+                },
+                'body': json.dumps({
+                    'error': 'Internal Server Error',
+                    'message': 'Required environment variables not set'
+                })
+            }
         
         # Initialize AWS clients
         transcribe_client = boto3.client('transcribe')
@@ -35,7 +66,10 @@ def handler(event, context):
         table = dynamodb.Table(submissions_table)
         
         # Start transcription job
-        job_name = f"transcribe-{submission_id}-{uuid.uuid4().hex[:8]}"
+        # Sanitize submission_id to only include valid characters (alphanumeric, period, underscore, hyphen)
+        # Replace colons and spaces with hyphens
+        sanitized_submission_id = submission_id.replace('::', '-').replace(':', '-').replace(' ', '-')
+        job_name = f"transcribe-{sanitized_submission_id}-{uuid.uuid4().hex[:8]}"
         media_uri = f"s3://{voice_memo_bucket}/{voice_memo_key}"
         
         print(f"Starting transcription job: {job_name}")
@@ -50,7 +84,7 @@ def handler(event, context):
         
         # Poll for transcription completion
         max_wait_time = 300  # 5 minutes
-        poll_interval = 5  # 5 seconds
+        poll_interval = 2
         elapsed_time = 0
         
         while elapsed_time < max_wait_time:
@@ -96,6 +130,12 @@ def handler(event, context):
                 
                 return {
                     'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                        'Access-Control-Allow-Methods': 'POST,OPTIONS'
+                    },
                     'body': json.dumps({
                         'message': 'Transcription completed successfully',
                         'submission_id': submission_id,
@@ -112,7 +152,19 @@ def handler(event, context):
                     TranscriptionJobName=job_name
                 )
                 
-                raise Exception(f"Transcription job failed: {failure_reason}")
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                        'Access-Control-Allow-Methods': 'POST,OPTIONS'
+                    },
+                    'body': json.dumps({
+                        'error': 'Transcription Failed',
+                        'message': f'Transcription job failed: {failure_reason}'
+                    })
+                }
             
             # Still in progress, wait and poll again
             time.sleep(poll_interval)
@@ -120,12 +172,30 @@ def handler(event, context):
         
         # Timeout
         print(f"Transcription timed out after {max_wait_time}s")
-        raise Exception(f"Transcription job timed out after {max_wait_time} seconds")
+        return {
+            'statusCode': 504,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'POST,OPTIONS'
+            },
+            'body': json.dumps({
+                'error': 'Gateway Timeout',
+                'message': f'Transcription job timed out after {max_wait_time} seconds'
+            })
+        }
     
     except Exception as e:
         print(f"Error in transcription handler: {str(e)}")
         return {
             'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'POST,OPTIONS'
+            },
             'body': json.dumps({
                 'error': 'Transcription failed',
                 'message': str(e)

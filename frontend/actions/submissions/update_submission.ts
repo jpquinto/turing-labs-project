@@ -1,6 +1,7 @@
 "use server";
 
 import axios from "axios";
+import { getAuthHeaders } from "@/lib/getAuthHeaders";
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL!;
 
@@ -21,12 +22,14 @@ export const updateSubmission = async ({
   updates,
 }: UpdateSubmissionProps): Promise<{ message: string; data: any }> => {
   try {
+    const authHeaders = await getAuthHeaders();
     const response = await axios.patch(
       `${BACKEND_API_URL}/submission/${submission_id}/${recipe_id}`,
       updates,
       {
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders,
         },
       }
     );

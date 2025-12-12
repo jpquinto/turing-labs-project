@@ -77,7 +77,8 @@ class SubmissionService:
         score: float,
         status: str = "draft",
         notes: Optional[str] = None,
-        voice_memo_key: Optional[str] = None
+        voice_memo_key: Optional[str] = None,
+        submission_id: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Create a new submission
@@ -87,7 +88,9 @@ class SubmissionService:
             if status not in ["draft", "saved"]:
                 raise ValueError("Status must be 'draft' or 'saved'")
 
-            submission_id = str(uuid.uuid4())
+            # Use provided submission_id or generate a new one
+            if submission_id is None:
+                submission_id = str(uuid.uuid4())
             current_time = datetime.utcnow().isoformat()
 
             item = {

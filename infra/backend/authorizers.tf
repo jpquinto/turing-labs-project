@@ -48,3 +48,52 @@ module "authorizers_webhooks_auth0_authorizer" {
   authorizer_arn                   = module.auth0_webhook_lambda.arn
   authorizer_result_ttl_in_seconds = 300
 }
+
+################################
+# AUTH0 JWT AUTHORIZER
+################################
+module "auth0_jwt_packager" {
+  source = "../modules/util_packager/nodejs"
+
+  entry_file_path   = "${path.root}/../lambda_functions/authorizers/jwt/auth0/handler.js"
+  export_dir        = "${path.root}/dist/lambda_functions/authorizers/jwt/auth0"
+  package_json_path = "${path.root}/../lambda_functions/authorizers/jwt/auth0/package.json"
+}
+
+module "auth0_jwt_lambda" {
+  source  = "../modules/lambda"
+  context = var.context
+
+  name = "authorizers-jwt-auth0-lambda"
+
+  source_dir = module.auth0_jwt_packager.result.build_directory
+
+  build_path = "${path.root}/dist/authorizers/jwt/auth0/auth0_jwt_authorizer.zip"
+
+  handler         = "handler.handler"
+  runtime         = "nodejs20.x"
+  memory          = 256
+  time_limit      = 15
+  deployment_type = "zip"
+  zip_project     = true
+  s3_bucket       = module.lambda_deployment_bucket.bucket_name
+  s3_key          = "lambda/authorizers/jwt/auth0/auth0_jwt_authorizer.zip"
+
+  enable_vpc_access = false
+
+  environment_variables = {
+    AUTH0_DOMAIN   = var.auth0_domain
+    AUTH0_AUDIENCE = var.auth0_audience
+  }
+}
+
+module "authorizers_jwt_auth0_authorizer" {
+  source  = "../modules/apigw_rest/authorizers/lambda_authorizer"
+  context = var.context
+
+  rest_api_id                      = module.api_gateway.api_id
+  authorizer_name                  = "authorizers-jwt-auth0-authorizer"
+  authorizer_invoke_arn            = module.auth0_jwt_lambda.invoke_arn
+  authorizer_arn                   = module.auth0_jwt_lambda.arn
+  authorizer_result_ttl_in_seconds = 300
+}
